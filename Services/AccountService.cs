@@ -1,4 +1,5 @@
 ﻿using KanS.Entities;
+using KanS.Exceptions;
 using KanS.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,13 +26,13 @@ public class AccountService : IAccountService {
             .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
         if(user == null) {
-            throw new NotImplementedException();
+            throw new BadRequestException("Invalid username or password");
         }
 
         var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
 
         if(result == PasswordVerificationResult.Failed) {
-            throw new NotImplementedException();
+            throw new BadRequestException("Invalid username or password");
         }
 
         var claims = new List<Claim>() {

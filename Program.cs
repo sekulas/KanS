@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using KanS;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using KanS.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,8 @@ builder.Services.AddDbContext<KansDbContext>(
     o => o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
@@ -49,6 +52,8 @@ builder.Services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseAuthentication();
 
