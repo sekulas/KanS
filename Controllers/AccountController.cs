@@ -18,4 +18,12 @@ public class AccountController : ControllerBase {
         await _accountService.RegisterUser(dto);
         return Ok();
     }
+
+    [HttpPost("login")]
+    public async Task<ActionResult> Login([FromBody] UserLoginDto dto) {
+        
+        string token = await _accountService.GenerateJwt(dto);
+
+        return Ok(token);
+    }
 }
