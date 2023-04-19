@@ -26,7 +26,6 @@ const AuthLayout = () => {
   }, [navigate])
 
   return (
-    <div>
       loading ? (
         <Loading fullHeight/>
       ) : (
@@ -42,7 +41,6 @@ const AuthLayout = () => {
           </Box>
         </Container>
       )
-    </div>
   )
 }
 
