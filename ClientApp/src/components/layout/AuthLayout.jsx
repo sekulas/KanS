@@ -17,7 +17,7 @@ const AuthLayout = () => {
       if(!isAuth) {
         setLoading(false)
       } else {
-        navigate('/account/login')
+        navigate('/')
       }
     }
 
