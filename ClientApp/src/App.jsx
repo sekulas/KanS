@@ -20,7 +20,7 @@ function App() {
             <CssBaseline/>
             <BrowserRouter>
                 <Routes>
-                    <Route path='/account/' element={<AuthLayout/>}>
+                    <Route path='/' element={<AuthLayout/>}>
                         <Route path='login' element={<Login/>}/>
                         <Route path='register' element={<Register/>}/>
                     </Route>

@@ -14,7 +14,7 @@ const AppLayout = () => {
       const isAuth = authUtils.isAuthenticated()
 
       if(!isAuth) {
-        navigate('/account/login')
+        navigate('/login')
       } else {
         setLoading(false)
       }
