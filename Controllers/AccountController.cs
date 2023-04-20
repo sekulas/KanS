@@ -22,8 +22,8 @@ public class AccountController : ControllerBase {
     [HttpPost("login")]
     public async Task<ActionResult> Login([FromBody] UserLoginDto dto) {
         
-        string token = await _accountService.GenerateJwt(dto);
+        string writtenToken = await _accountService.GenerateJwt(dto);
 
-        return Ok(token);
+        return Ok(new {token = writtenToken});
     }
 }
