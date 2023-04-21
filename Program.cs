@@ -34,6 +34,16 @@ builder.Services.AddAuthentication(option => {
     };
 });
 
+builder.Services.AddCors(options => {
+    options.AddDefaultPolicy(
+        policy => {
+            policy.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+        });
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddFluentValidationAutoValidation();
@@ -54,10 +64,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
+//app.UseMiddleware<CorsMiddleware>();
 
 app.UseAuthentication();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
