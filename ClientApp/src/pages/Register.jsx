@@ -2,6 +2,7 @@ import { Box, Button, TextField } from '@mui/material'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import LoadingButton from '@mui/lab/LoadingButton'
+import authApi from '../api/authApi'
 
 const Register = () => {
 
@@ -13,7 +14,7 @@ const Register = () => {
     const [passwordErrText, setPasswordErrText] = useState('')
     const [confirmPasswordErrText, setConfirmPasswordErrText] = useState('')
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         setNameErrText('')
         setEmailErrText('')
@@ -52,6 +53,34 @@ const Register = () => {
         if( err ) {
             return
         }
+
+        setLoading(true)
+
+        try {
+            const res = await authApi.register({
+                name, email, password, confirmPassword
+            })
+            setLoading(false)
+            localStorage.setItem("token", res.token);
+            navigate('/')
+        }
+        catch (err) {
+            console.log(err)
+            const errors = err.data.errors
+
+            if (errors.Name) {
+                setNameErrText(errors.Name[0]);
+            }
+            if (errors.Email) {
+                setEmailErrText(errors.Email[0]);
+            }
+            if (errors.Password) {
+                setPasswordErrText(errors.Password[0]);
+            }
+
+            setLoading(false)
+        }
+
     }
 
     return (
