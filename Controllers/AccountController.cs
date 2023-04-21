@@ -25,7 +25,7 @@ public class AccountController : ControllerBase {
 
         string writtenToken = await _accountService.GenerateJwt(loginDto);
 
-        return Ok();
+        return Ok(new { token = writtenToken });
     }
 
     [HttpPost("login")]
