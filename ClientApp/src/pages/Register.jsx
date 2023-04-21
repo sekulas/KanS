@@ -65,7 +65,6 @@ const Register = () => {
             navigate('/')
         }
         catch (err) {
-            console.log(err)
             const errors = err.data.errors
 
             if (errors.Name) {
