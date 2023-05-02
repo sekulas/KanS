@@ -42,13 +42,11 @@ const Login = () => {
             const res = await authApi.login({
                 email, password
             })
-            console.log(res)
             setLoading(false)
             localStorage.setItem("token", res.token);
             navigate('/')
         }
         catch (err) {
-            console.log(err)
             const errors = err.data.errors
 
             if (errors) {
