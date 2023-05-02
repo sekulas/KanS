@@ -24,8 +24,6 @@ function App() {
                         <Route path='login' element={<Login/>}/>
                         <Route path='register' element={<Register/>}/>
                     </Route>
-                </Routes>
-                <Routes>
                     <Route path='/' element={<AppLayout/>}>
                         <Route index element={<Home/>}/>
                         <Route path='boards/:boardId' element={<Board/>}/>
