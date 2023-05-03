@@ -2,6 +2,7 @@ import { Drawer, IconButton, Typography, List, ListItem, Box } from "@mui/materi
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from 'react-router-dom'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import assets from '../../assets/index'
 
 const Sidebar = () => {
@@ -46,6 +47,39 @@ const Sidebar = () => {
                         </Typography>
                         <IconButton onClick={logout}>
                             <LogoutOutlinedIcon fontSize='small'/>
+                        </IconButton>
+                    </Box>
+                </ListItem>
+                <Box sx={{
+                    paddingTop: '10px'
+                }}/>
+                <ListItem>
+                    <Box sx={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Typography variant='body2' fontWeight='700'>
+                            Favourites
+                        </Typography>
+                    </Box>
+                </ListItem>
+                <Box sx={{
+                    paddingTop: '10px'
+                }}/>
+                <ListItem>
+                    <Box sx={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Typography variant='body2' fontWeight='700'>
+                            All Boards
+                        </Typography>
+                        <IconButton>
+                            <AddBoxOutlinedIcon fontSize='small'/>
                         </IconButton>
                     </Box>
                 </ListItem>
