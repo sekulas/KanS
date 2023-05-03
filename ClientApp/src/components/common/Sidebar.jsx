@@ -1,11 +1,19 @@
 import { Drawer, IconButton, Typography, List, ListItemButton, Box } from "@mui/material"
 import { useSelector, useDispatch } from "react-redux"
+import { useNavigate } from 'react-router-dom'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import assets from '../../assets/index'
 
 const Sidebar = () => {
     const user = useSelector( (state) => state.user.value )
+    const navigate = useNavigate()
     const sidebarWidth = 250
+
+    const logout = () => {
+        localStorage.removeItem('token')
+        navigate('/login')
+    }
+
 
     return (
         <Drawer
@@ -36,7 +44,7 @@ const Sidebar = () => {
                         <Typography variant='body2' fontWeight='700'>
                             {user.name}
                         </Typography>
-                        <IconButton>
+                        <IconButton onClick={logout}>
                             <LogoutOutlinedIcon fontSize='small'/>
                         </IconButton>
                     </Box>
