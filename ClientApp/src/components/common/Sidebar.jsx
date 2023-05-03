@@ -1,4 +1,4 @@
-import { Drawer, IconButton, Typography, List, ListItemButton, Box } from "@mui/material"
+import { Drawer, IconButton, Typography, List, ListItem, Box } from "@mui/material"
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from 'react-router-dom'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
@@ -34,7 +34,7 @@ const Sidebar = () => {
                 backgroundColor: assets.colors.secondary
              }}
             >
-                <ListItemButton>
+                <ListItem>
                     <Box sx={{
                         width: '100%',
                         display: 'flex',
@@ -48,7 +48,7 @@ const Sidebar = () => {
                             <LogoutOutlinedIcon fontSize='small'/>
                         </IconButton>
                     </Box>
-                </ListItemButton>
+                </ListItem>
             </List>
         </Drawer>
     )
