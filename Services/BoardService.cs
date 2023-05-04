@@ -46,6 +46,7 @@ public class BoardService : IBoardService {
             UserId = userId,
             BoardId = nextId,
             Position = nextPosition,
+            AssignmentDate = DateTime.UtcNow
         };
 
         await _context.UserBoards.AddAsync(ub);

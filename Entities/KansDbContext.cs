@@ -26,10 +26,6 @@ public class KansDbContext : DbContext {
             .HasDefaultValue(false);
 
         modelBuilder.Entity<UserBoard>()
-            .Property(ub => ub.AssignmentDate)
-            .HasDefaultValue(DateTime.Now.ToUniversalTime());
-
-        modelBuilder.Entity<UserBoard>()
             .Property(ub => ub.Deleted)
             .HasDefaultValue(false);
 
