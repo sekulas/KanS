@@ -1,13 +1,14 @@
 ﻿namespace KanS.Entities;
 
 public class UserBoard {
-    public int AssignmentId { get; set; } //to
+    public int AssignmentId { get; set; }
     public int UserId { get; set; }
-    public int BoardId { get; set; } //to
-    public string BoardName { get; set; } //to
-    public int Postion { get; set; } //to
-    public bool Favorite { get; set; } = false; //to
-    public int FavouritePostion { get; set; } //to
-    public DateTime AssignmentDate { get; set; } = DateTime.Now;
-    public bool Deleted { get; set; } = false;
+    public User User { get; set; }
+    public int BoardId { get; set; } 
+    public Board Board { get; set; } 
+    public int Postion { get; set; }
+    public bool Favorite { get; set; }
+    public int FavouritePostion { get; set; }
+    public DateTime AssignmentDate { get; set; }
+    public bool Deleted { get; set; }
 }
