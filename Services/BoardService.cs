@@ -19,8 +19,10 @@ public class BoardService : IBoardService {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
         int nextId = 1;
-        int maxId = await _context.Boards.MaxAsync(u => u.Id);
-        if(maxId != null) {
+        bool anyBoardsExist = await _context.Boards.AnyAsync();
+
+        if(anyBoardsExist) {
+            int maxId = await _context.Boards.MaxAsync(u => u.Id);
             nextId = maxId + 1;
         }
 
@@ -32,10 +34,11 @@ public class BoardService : IBoardService {
         await _context.Boards.AddAsync(board);
 
         int nextPosition = 1;
-        int maxPosition = await _context.UserBoards
-            .Where(ub => ub.UserId == userId)
-            .MaxAsync(ub => ub.Position);
-        if(maxPosition != null) {
+        bool anyUserBoardsExist = await _context.UserBoards.Where(ub => ub.UserId == userId).AnyAsync();
+        if(anyUserBoardsExist) {
+            int maxPosition = await _context.UserBoards
+                .Where(ub => ub.UserId == userId)
+                .MaxAsync(ub => ub.Position);
             nextPosition = maxPosition + 1;
         }
 
