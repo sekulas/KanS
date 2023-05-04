@@ -72,4 +72,16 @@ public class BoardService : IBoardService {
 
         return boardDto;
     }
+
+    public async Task<List<BoardDto>> GetAllBoardsForUser() {
+        var userId = (int) _userContextService.GetUserId;
+
+        var boards = await _context.UserBoards
+            .Where(ub => ub.UserId == userId)
+            .OrderBy(ub => ub.Position)
+            .Select(ub => _mapper.Map<Board,BoardDto>(ub.Board))
+            .ToListAsync();
+
+        return boards;
+    }
 }

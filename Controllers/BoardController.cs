@@ -3,6 +3,7 @@ using KanS.Interfaces;
 using KanS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KanS.Controllers;
 
@@ -29,5 +30,12 @@ public class BoardController : ControllerBase {
         var board = await _boardService.GetBoardById(id);
 
         return Ok(board);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<BoardDto>>> GetAllBoardsForUser() {
+        var boards = await _boardService.GetAllBoardsForUser();
+
+        return Ok(boards);
     }
 }
