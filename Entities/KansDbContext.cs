@@ -34,6 +34,10 @@ public class KansDbContext : DbContext {
             .HasDefaultValue(false);
 
         modelBuilder.Entity<UserBoard>()
+            .Property(ub => ub.FavouritePostion)
+            .HasDefaultValue(0);
+
+        modelBuilder.Entity<UserBoard>()
             .HasOne(ub => ub.User)
             .WithMany(u => u.UserBoards)
             .HasForeignKey(ub => ub.UserId);
@@ -46,7 +50,13 @@ public class KansDbContext : DbContext {
         //Configure Board entity
         modelBuilder.Entity<Board>()
             .Property(j => j.Name)
-            .HasDefaultValue("Board");
+            .HasDefaultValue("New Board");
+        modelBuilder.Entity<Board>()
+            .Property(j => j.Description)
+            .HasDefaultValue("");
+        modelBuilder.Entity<Board>()
+            .Property(j => j.Icon)
+            .HasDefaultValue("");
 
         modelBuilder.Entity<Board>()
             .HasMany(b => b.Sections)
@@ -56,7 +66,7 @@ public class KansDbContext : DbContext {
         // Configure Section entity
         modelBuilder.Entity<Section>()
             .Property(j => j.Name)
-            .HasDefaultValue("Section");
+            .HasDefaultValue("New Section");
 
         modelBuilder.Entity<Section>()
             .HasMany(s => s.Tasks)
@@ -66,7 +76,7 @@ public class KansDbContext : DbContext {
         // Configure Job entity
         modelBuilder.Entity<Job>()
             .Property(j => j.Name)
-            .HasDefaultValue("Task");
+            .HasDefaultValue("New Task");
 
         modelBuilder.Entity<Job>()
             .Property(j => j.Description)
