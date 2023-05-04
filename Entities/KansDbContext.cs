@@ -30,10 +30,6 @@ public class KansDbContext : DbContext {
             .HasDefaultValue(false);
 
         modelBuilder.Entity<UserBoard>()
-            .Property(ub => ub.FavouritePostion)
-            .HasDefaultValue(0);
-
-        modelBuilder.Entity<UserBoard>()
             .HasOne(ub => ub.User)
             .WithMany(u => u.UserBoards)
             .HasForeignKey(ub => ub.UserId);

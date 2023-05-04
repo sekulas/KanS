@@ -6,9 +6,7 @@ public class UserBoard {
     public User User { get; set; }
     public int BoardId { get; set; } 
     public Board Board { get; set; } 
-    public int Position { get; set; }
     public bool Favorite { get; set; }
-    public int FavouritePostion { get; set; }
     public DateTime AssignmentDate { get; set; }
     public bool Deleted { get; set; }
 }

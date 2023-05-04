@@ -37,19 +37,9 @@ public class BoardService : IBoardService {
 
         await _context.Boards.AddAsync(board);
 
-        int nextPosition = 1;
-        bool anyUserBoardsExist = await _context.UserBoards.Where(ub => ub.UserId == userId).AnyAsync();
-        if(anyUserBoardsExist) {
-            int maxPosition = await _context.UserBoards
-                .Where(ub => ub.UserId == userId)
-                .MaxAsync(ub => ub.Position);
-            nextPosition = maxPosition + 1;
-        }
-
         UserBoard ub = new UserBoard() {
             UserId = userId,
             BoardId = nextId,
-            Position = nextPosition,
             AssignmentDate = DateTime.UtcNow
         };
 
@@ -78,7 +68,6 @@ public class BoardService : IBoardService {
 
         var boards = await _context.UserBoards
             .Where(ub => ub.UserId == userId)
-            .OrderBy(ub => ub.Position)
             .Select(ub => _mapper.Map<Board,BoardDto>(ub.Board))
             .ToListAsync();
 

@@ -3,6 +3,7 @@ using System;
 using KanS.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KanS.Migrations
 {
     [DbContext(typeof(KansDbContext))]
-    partial class KansDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230504193151_postionFieldChange")]
+    partial class postionFieldChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,6 +39,11 @@ namespace KanS.Migrations
                         .HasColumnType("text")
                         .HasDefaultValue("");
 
+                    b.Property<int>("FavouritePosition")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("Icon")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -49,6 +57,9 @@ namespace KanS.Migrations
                         .HasDefaultValue("New Board");
 
                     b.Property<int>("OwnerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Position")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
