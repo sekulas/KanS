@@ -1,4 +1,6 @@
-﻿using KanS.Entities;
+﻿using AutoMapper;
+using KanS.Entities;
+using KanS.Exceptions;
 using KanS.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -7,10 +9,12 @@ namespace KanS.Services;
 
 public class BoardService : IBoardService {
     private readonly KansDbContext _context;
+    private readonly IMapper _mapper;
     private readonly IUserContextService _userContextService;
 
-    public BoardService(KansDbContext context, IUserContextService userContextService) {
+    public BoardService(KansDbContext context, IMapper mapper, IUserContextService userContextService) {
         _context = context;
+        _mapper = mapper;
         _userContextService = userContextService;
     }
     public async Task<int> CreateBoard() {
@@ -54,5 +58,18 @@ public class BoardService : IBoardService {
         await _context.SaveChangesAsync();
 
         return nextId;
+    }
+
+    public async Task<BoardDto> GetBoardById(int id) { 
+
+        var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == id);
+
+        if(board == null) {
+            throw new NotFoundException("Board not found");
+        }
+
+        var boardDto = _mapper.Map<BoardDto>(board);
+
+        return boardDto;
     }
 }

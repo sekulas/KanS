@@ -8,6 +8,7 @@ public class KansMappingProfile : Profile {
     public KansMappingProfile() {
 
         CreateMap<UserRegisterDto, UserLoginDto>();
+        CreateMap<Board, BoardDto>();
 
     }
 }
