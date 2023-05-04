@@ -16,9 +16,8 @@ public class BoardController : ControllerBase {
     [HttpPost]
     public async Task<ActionResult> CreateBoard() {
 
-        await _boardService.CreateBoard();
+        int boardId = await _boardService.CreateBoard();
 
-        return Ok();
-
+        return Created($"/api/board/{boardId}", null);
     }
 }

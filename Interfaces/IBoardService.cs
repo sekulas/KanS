@@ -3,6 +3,6 @@
 namespace KanS.Interfaces;
 
 public interface IBoardService {
-    Task CreateBoard();
+    Task<int> CreateBoard();
 
 }
