@@ -10,6 +10,7 @@ using KanS;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using KanS.Middleware;
+using KanS.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,8 +59,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
