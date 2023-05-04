@@ -43,10 +43,25 @@ public class KansDbContext : DbContext {
             .WithMany(b => b.UserBoards)
             .HasForeignKey(ub => ub.BoardId);
 
+        //Configure Board entity
+        modelBuilder.Entity<Board>()
+            .Property(j => j.Name)
+            .HasDefaultValue("Board");
+
+        modelBuilder.Entity<Board>()
+            .HasMany(b => b.Sections)
+            .WithOne(s => s.Board)
+            .HasForeignKey(b => b.Id);
+
         // Configure Section entity
         modelBuilder.Entity<Section>()
             .Property(j => j.Name)
             .HasDefaultValue("Section");
+
+        modelBuilder.Entity<Section>()
+            .HasMany(s => s.Tasks)
+            .WithOne(t => t.Section)
+            .HasForeignKey(s => s.Id);
 
         // Configure Job entity
         modelBuilder.Entity<Job>()
