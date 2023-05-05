@@ -18,11 +18,13 @@ public class BoardController : ControllerBase {
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateBoard() {
+    public async Task<ActionResult<BoardDto>> CreateBoard() {
 
-        int boardId = await _boardService.CreateBoard();
+        var boardId = await _boardService.CreateBoard();
 
-        return Created($"/api/board/{boardId}", null);
+        var board = await _boardService.GetBoardById(boardId);
+
+        return CreatedAtAction(nameof(GetBoardById), new { id = board.Id }, board);
     }
 
     [HttpGet("{id}")]
