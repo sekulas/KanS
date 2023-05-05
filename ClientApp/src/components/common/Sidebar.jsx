@@ -4,17 +4,40 @@ import { useNavigate } from 'react-router-dom'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import assets from '../../assets/index'
+import boardApi from "../../api/boardApi"
+import { setBoards } from "../../redux/features/boardSlice"
+import { useEffect } from "react"
 
 const Sidebar = () => {
     const user = useSelector( (state) => state.user.value )
+    const boards = useSelector( (state) => state.board.value )
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const sidebarWidth = 250
+
+    useEffect(() => {
+        const getBoards = async () => {
+            try {
+                const res = await boardApi.getAllForUser()
+                dispatch(setBoards(res))
+            } catch(err) {
+                alert(err)
+            }
+        }
+
+        getBoards()
+    }, [])
+
+    useEffect(() => {
+        console.log(boards)
+    }, [boards])
+    
+    
 
     const logout = () => {
         localStorage.removeItem('token')
         navigate('/login')
     }
-
 
     return (
         <Drawer
