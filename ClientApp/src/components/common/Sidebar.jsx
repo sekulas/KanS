@@ -1,6 +1,6 @@
 import { Drawer, IconButton, Typography, List, ListItem, Box } from "@mui/material"
 import { useSelector, useDispatch } from "react-redux"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import assets from '../../assets/index'
@@ -13,6 +13,7 @@ const Sidebar = () => {
     const boards = useSelector( (state) => state.board.value )
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const { boardId } = useParams()
     const sidebarWidth = 250
 
     useEffect(() => {
@@ -20,6 +21,9 @@ const Sidebar = () => {
             try {
                 const res = await boardApi.getAllForUser()
                 dispatch(setBoards(res))
+                if(res.length > 0 && boardId === undefined) {
+                    navigate(`/boards/${res[0].id}`)
+                }
             } catch(err) {
                 alert(err)
             }
@@ -32,8 +36,6 @@ const Sidebar = () => {
         console.log(boards)
     }, [boards])
     
-    
-
     const logout = () => {
         localStorage.removeItem('token')
         navigate('/login')
