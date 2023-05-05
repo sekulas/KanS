@@ -48,4 +48,11 @@ public class BoardController : ControllerBase {
 
         return Ok(boards);
     }
+
+    [HttpGet("favourites")]
+    public async Task<ActionResult<List<BoardDto>>> GetAllFavouriteBoardsForUser() {
+        var boards = await _boardService.GetAllFavouriteBoardsForUser();
+
+        return Ok(boards);
+    }
 }

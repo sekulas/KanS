@@ -74,9 +74,15 @@ public class BoardService : IBoardService {
             throw new NotFoundException("Board not found");
         }
 
-        board.Name = boardDto.Name == "" ? "Untitled" : boardDto.Name;
-        board.Description = boardDto.Description;
-        board.Favourite = boardDto.Favourite;
+        if(boardDto.Name != null) {
+            board.Name = boardDto.Name == "" ? "Untitled" : boardDto.Name;
+        }
+        if(boardDto.Description != null) {
+            board.Description = boardDto.Description;
+        }
+        if(boardDto.Favourite != null) {
+            board.Favourite = (bool) boardDto.Favourite;
+        }
 
         await _context.SaveChangesAsync();
     }
@@ -87,6 +93,17 @@ public class BoardService : IBoardService {
         var boards = await _context.UserBoards
             .Where(ub => ub.UserId == userId)
             .Select(ub => _mapper.Map<Board,BoardDto>(ub.Board))
+            .ToListAsync();
+
+        return boards;
+    }
+
+    public async Task<List<BoardDto>> GetAllFavouriteBoardsForUser() {
+        var userId = (int) _userContextService.GetUserId;
+
+        var boards = await _context.UserBoards
+            .Where(ub => ub.UserId == userId && ub.Board.Favourite)
+            .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();
 
         return boards;
