@@ -40,11 +40,22 @@ const Sidebar = () => {
           navigate(`/boards/${boards[0].id}`)
         }
         setActiveIndex(activeItem)
-      }, [boards, boardId, navigate])
+    }, [boards, boardId, navigate])
     
     const logout = () => {
         localStorage.removeItem('token')
         navigate('/login')
+    }
+
+    const addBoard = async () => {
+        try {
+            const res = await boardApi.create()
+            const newList = [...boards, res]
+            dispatch(setBoards(newList))
+            navigate(`/boards/${res.id}`)
+        } catch (err) {
+            alert(err)
+        }
     }
 
     return (
@@ -109,7 +120,7 @@ const Sidebar = () => {
                         <Typography variant='body2' fontWeight='700'>
                             All Boards
                         </Typography>
-                        <IconButton>
+                        <IconButton onClick={addBoard}>
                             <AddBoxOutlinedIcon fontSize='small'/>
                         </IconButton>
                     </Box>
