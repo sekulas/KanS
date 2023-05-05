@@ -32,8 +32,11 @@ public class BoardService : IBoardService {
 
         Board board = new Board() {
             Id = nextId,
+            Name = $"New Board #{user.BoardsCreated + 1}",
             OwnerId = userId,
         };
+
+        user.BoardsCreated++;
 
         await _context.Boards.AddAsync(board);
 

@@ -16,6 +16,9 @@ public class KansDbContext : DbContext {
         modelBuilder.Entity<User>()
             .Property(u => u.Email)
             .IsRequired();
+        modelBuilder.Entity<User>()
+            .Property(u => u.BoardsCreated)
+            .HasDefaultValue(0);
 
         // Configure UserBoard entity
         modelBuilder.Entity<UserBoard>()
