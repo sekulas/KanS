@@ -1,12 +1,13 @@
 import { Drawer, IconButton, Typography, List, ListItem, Box } from "@mui/material"
 import { useSelector, useDispatch } from "react-redux"
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
+import ListItemButton from '@mui/material/ListItemButton';
 import assets from '../../assets/index'
 import boardApi from "../../api/boardApi"
 import { setBoards } from "../../redux/features/boardSlice"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 const Sidebar = () => {
     const user = useSelector( (state) => state.user.value )
@@ -15,6 +16,7 @@ const Sidebar = () => {
     const dispatch = useDispatch()
     const { boardId } = useParams()
     const sidebarWidth = 250
+    const [activeIndex, setActiveIndex] = useState(0)
 
     useEffect(() => {
         const getBoards = async () => {
@@ -33,8 +35,12 @@ const Sidebar = () => {
     }, [])
 
     useEffect(() => {
-        console.log(boards)
-    }, [boards])
+        const activeItem = boards.findIndex(e => e.id === boardId)
+        if (boards.length > 0 && boardId === undefined) {
+          navigate(`/boards/${boards[0].id}`)
+        }
+        setActiveIndex(activeItem)
+      }, [boards, boardId, navigate])
     
     const logout = () => {
         localStorage.removeItem('token')
@@ -108,6 +114,26 @@ const Sidebar = () => {
                         </IconButton>
                     </Box>
                 </ListItem>
+                {boards.map((item, index) => (
+                    <ListItemButton
+                        key={item.id}
+                        selected={index === activeIndex}
+                        component={Link}
+                        to={`/boards/${item.id}`}
+                        sx={{
+                            pl: '20px',
+                            cursor: 'pointer!important'
+                        }}
+                    >
+                        <Typography
+                            variant='body2'
+                            fontWeight='700'
+                            sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                        >
+                        {item.icon} {item.name}
+                        </Typography>
+                    </ListItemButton>
+                ))}
             </List>
         </Drawer>
     )
