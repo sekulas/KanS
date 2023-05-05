@@ -8,6 +8,7 @@ import assets from '../../assets/index'
 import boardApi from "../../api/boardApi"
 import { setBoards } from "../../redux/features/boardSlice"
 import { useEffect, useState } from "react"
+import FavouriteList from "./FavouriteList"
 
 const Sidebar = () => {
     const user = useSelector( (state) => state.user.value )
@@ -16,7 +17,6 @@ const Sidebar = () => {
     const dispatch = useDispatch()
     const { boardId } = useParams()
     const sidebarWidth = 250
-    const [activeIndex, setActiveIndex] = useState(0)
 
     useEffect(() => {
         const getBoards = async () => {
@@ -35,11 +35,9 @@ const Sidebar = () => {
     }, [])
 
     useEffect(() => {
-        const activeItem = boards.findIndex(e => e.id === boardId)
         if (boards.length > 0 && boardId === undefined) {
           navigate(`/boards/${boards[0].id}`)
         }
-        setActiveIndex(activeItem)
     }, [boards, boardId, navigate])
     
     const logout = () => {
@@ -95,18 +93,7 @@ const Sidebar = () => {
                 <Box sx={{
                     paddingTop: '10px'
                 }}/>
-                <ListItem>
-                    <Box sx={{
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
-                    }}>
-                        <Typography variant='body2' fontWeight='700'>
-                            Favourites
-                        </Typography>
-                    </Box>
-                </ListItem>
+                <FavouriteList/>
                 <Box sx={{
                     paddingTop: '10px'
                 }}/>
@@ -125,10 +112,10 @@ const Sidebar = () => {
                         </IconButton>
                     </Box>
                 </ListItem>
-                {boards.map((item, index) => (
+                {boards.map((item) => (
                     <ListItemButton
                         key={item.id}
-                        selected={index === activeIndex}
+                        selected={item.id == boardId}
                         component={Link}
                         to={`/boards/${item.id}`}
                         sx={{
