@@ -4,6 +4,7 @@ const boardApi = {
   create: () => axiosClient.post("board"),
   getAllForUser: () => axiosClient.get("board"),
   getOne: (boardId) => axiosClient.get(`board/${boardId}`),
+  update: (boardId, params) => axiosClient.put(`board/${boardId}`, params),
 };
 
 export default boardApi;
