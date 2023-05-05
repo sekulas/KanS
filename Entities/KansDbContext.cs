@@ -25,10 +25,6 @@ public class KansDbContext : DbContext {
             .HasKey(ub => ub.AssignmentId);
 
         modelBuilder.Entity<UserBoard>()
-            .Property(ub => ub.Favorite)
-            .HasDefaultValue(false);
-
-        modelBuilder.Entity<UserBoard>()
             .Property(ub => ub.Deleted)
             .HasDefaultValue(false);
 
@@ -50,8 +46,8 @@ public class KansDbContext : DbContext {
             .Property(j => j.Description)
             .HasDefaultValue("");
         modelBuilder.Entity<Board>()
-            .Property(j => j.Icon)
-            .HasDefaultValue("");
+            .Property(ub => ub.Favourite)
+            .HasDefaultValue(false);
 
         modelBuilder.Entity<Board>()
             .HasMany(b => b.Sections)

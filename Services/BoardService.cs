@@ -66,6 +66,21 @@ public class BoardService : IBoardService {
         return boardDto;
     }
 
+    public async Task UpdateBoard(int id, BoardUpdateDto boardDto) {
+
+        var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == id);
+
+        if(board == null) {
+            throw new NotFoundException("Board not found");
+        }
+
+        board.Name = boardDto.Name == "" ? "Untitled" : boardDto.Name;
+        board.Description = boardDto.Description;
+        board.Favourite = boardDto.Favourite;
+
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<List<BoardDto>> GetAllBoardsForUser() {
         var userId = (int) _userContextService.GetUserId;
 

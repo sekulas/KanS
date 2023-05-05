@@ -8,4 +8,5 @@ public interface IBoardService {
     Task<int> CreateBoard();
     Task<BoardDto> GetBoardById(int id);
     Task<List<BoardDto>> GetAllBoardsForUser();
+    Task UpdateBoard(int id, BoardUpdateDto boardDto);
 }

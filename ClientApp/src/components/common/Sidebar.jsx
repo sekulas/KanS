@@ -141,7 +141,7 @@ const Sidebar = () => {
                             fontWeight='700'
                             sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
                         >
-                        {item.icon} {item.name}
+                        {item.name}
                         </Typography>
                     </ListItemButton>
                 ))}

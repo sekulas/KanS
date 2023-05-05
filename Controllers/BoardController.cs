@@ -27,6 +27,14 @@ public class BoardController : ControllerBase {
         return CreatedAtAction(nameof(GetBoardById), new { id = board.Id }, board);
     }
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateBoard([FromRoute] int id, [FromBody] BoardUpdateDto boardDto) {
+
+        await _boardService.UpdateBoard(id, boardDto);
+
+        return Ok();
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<BoardDto>> GetBoardById([FromRoute] int id) {
         var board = await _boardService.GetBoardById(id);
