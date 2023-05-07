@@ -35,6 +35,14 @@ public class BoardController : ControllerBase {
         return Ok();
     }
 
+    [HttpDelete("{boardId}")]
+    public async Task<ActionResult> RemoveBoard([FromRoute] int boardId) {
+
+        await _boardService.RemoveBoard(boardId);
+
+        return Ok();
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<BoardDto>> GetBoardById([FromRoute] int id) {
         var board = await _boardService.GetBoardById(id);

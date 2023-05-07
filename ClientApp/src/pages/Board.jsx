@@ -1,7 +1,8 @@
 import { useEffect, useState  } from 'react'
-import { useParams } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useParams, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import { setFavouriteList } from "../redux/features/favouriteSlice";
+import { setBoards } from "../redux/features/boardSlice";
 import { Box, IconButton, TextField, Typography, Button, Divider } from '@mui/material'
 import StarOutlinedIcon from '@mui/icons-material/StarOutlined'
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined'
@@ -11,10 +12,14 @@ import boardApi from '../api/boardApi'
 const Board = () => {
     const { boardId } = useParams()
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [sections, setSections] = useState([])
     const [isFavourite, setIsFavourite] = useState(false)
+
+    const boards = useSelector( (state) => state.board.value )
+    const favouriteList = useSelector( (state) => state.favourites.value )
 
     useEffect(() => {
 
@@ -44,6 +49,31 @@ const Board = () => {
         }
     }
 
+    const removeBoard = async () => {
+        try {
+            await boardApi.remove(boardId)
+            
+            if(isFavourite) {
+                const newFavouriteList = favouriteList.filter(e => e.id != boardId)
+                dispatch(setFavouriteList(newFavouriteList))
+            }
+
+            const newList = boards.filter(e => e.id != boardId)
+
+            if(newList.length == 0) {
+                navigate('/')
+            }
+            else {
+                navigate(`/boards/${newList[0].id}`)
+            }
+
+            dispatch(setBoards(newList))
+            
+        } catch(err) {
+            alert(err)
+        }
+    }
+
     return (
         <>
             <Box sx={{
@@ -61,7 +91,7 @@ const Board = () => {
                     )
                 }
                 </IconButton>
-                <IconButton variant='outlined' color='error'>
+                <IconButton variant='outlined' color='error' onClick={removeBoard}>
                     <DeleteOutlinedIcon/>
                 </IconButton>
             </Box>

@@ -2,7 +2,6 @@
 using KanS.Entities;
 using KanS.Exceptions;
 using KanS.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanS.Services;
@@ -53,9 +52,17 @@ public class BoardService : IBoardService {
         return nextId;
     }
 
-    public async Task<BoardDto> GetBoardById(int id) { 
+    public async Task<BoardDto> GetBoardById(int boardId) {
+        var userId = (int) _userContextService.GetUserId;
 
-        var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == id);
+        var ub = await _context.UserBoards
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+
+        if(ub == null) {
+            throw new NotFoundException("There is no connection between the user and the board.");
+        }
+
+        var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
 
         if(board == null) {
             throw new NotFoundException("Board not found");
@@ -66,9 +73,9 @@ public class BoardService : IBoardService {
         return boardDto;
     }
 
-    public async Task UpdateBoard(int id, BoardUpdateDto boardDto) {
+    public async Task UpdateBoard(int boardId, BoardUpdateDto boardDto) {
 
-        var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == id);
+        var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
 
         if(board == null) {
             throw new NotFoundException("Board not found");
@@ -91,7 +98,7 @@ public class BoardService : IBoardService {
         var userId = (int) _userContextService.GetUserId;
 
         var boards = await _context.UserBoards
-            .Where(ub => ub.UserId == userId)
+            .Where(ub => ub.UserId == userId && !ub.Deleted)
             .Select(ub => _mapper.Map<Board,BoardDto>(ub.Board))
             .ToListAsync();
 
@@ -102,10 +109,43 @@ public class BoardService : IBoardService {
         var userId = (int) _userContextService.GetUserId;
 
         var boards = await _context.UserBoards
-            .Where(ub => ub.UserId == userId && ub.Board.Favourite)
+            .Where(ub => ub.UserId == userId && ub.Board.Favourite && !ub.Deleted)
             .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();
 
         return boards;
+    }
+
+    public async Task RemoveBoard(int boardId) {
+        var userId = (int) _userContextService.GetUserId;
+        var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
+
+        if(board == null) {
+            throw new NotFoundException("Board not found.");
+        }
+
+        if (userId == board.OwnerId) {
+            var ubList = await _context.UserBoards
+                .Where(ub => ub.BoardId == boardId)
+                .ToListAsync();
+
+            foreach(var ub in ubList) {
+                ub.Deleted = true;
+            }
+        }
+        else {
+            var ub = await _context.UserBoards
+                .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId);
+
+            if(ub == null) {
+                throw new NotFoundException("There is no connection between the user and the board.");
+            }
+
+            ub.Deleted = true;
+        }
+
+
+
+        await _context.SaveChangesAsync();
     }
 }

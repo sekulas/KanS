@@ -6,6 +6,7 @@ const boardApi = {
   getAllFavouritesForUser: () => axiosClient.get("board/favourites"),
   getOne: (boardId) => axiosClient.get(`board/${boardId}`),
   update: (boardId, params) => axiosClient.put(`board/${boardId}`, params),
+  remove: (boardId) => axiosClient.delete(`board/${boardId}`),
 };
 
 export default boardApi;
