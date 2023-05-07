@@ -1,5 +1,7 @@
 import { useEffect, useState  } from 'react'
 import { useParams } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setFavouriteList } from "../redux/features/favouriteSlice";
 import { Box, IconButton, TextField, Typography, Button, Divider } from '@mui/material'
 import StarOutlinedIcon from '@mui/icons-material/StarOutlined'
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined'
@@ -8,6 +10,7 @@ import boardApi from '../api/boardApi'
 
 const Board = () => {
     const { boardId } = useParams()
+    const dispatch = useDispatch()
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [sections, setSections] = useState([])
@@ -34,6 +37,8 @@ const Board = () => {
         try {
             await boardApi.update(boardId, {favourite: !isFavourite})
             setIsFavourite(!isFavourite)
+            const res = await boardApi.getAllFavouritesForUser();
+            dispatch(setFavouriteList(res));
         } catch(err) {
             alert(err)
         }

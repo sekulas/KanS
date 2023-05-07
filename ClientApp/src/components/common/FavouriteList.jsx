@@ -1,5 +1,5 @@
 import { Typography, ListItem, ListItemButton, Box } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFavouriteList } from "../../redux/features/favouriteSlice";
 import { Link, useParams } from "react-router-dom";
