@@ -1,4 +1,5 @@
 ﻿using KanS.Exceptions;
+using System.Text.Json;
 
 namespace KanS.Middleware;
 
@@ -10,15 +11,18 @@ public class ErrorHandlingMiddleware : IMiddleware {
         }
         catch (BadRequestException badRequestException) {
             context.Response.StatusCode = 400;
-            await context.Response.WriteAsync(badRequestException.Message);
+            var result = JsonSerializer.Serialize(new { errors = badRequestException.Message });
+            await context.Response.WriteAsync(result);
         }
         catch (NotFoundException notFoundException) {
             context.Response.StatusCode = 404;
-            await context.Response.WriteAsync(notFoundException.Message);
+            var result = JsonSerializer.Serialize(new { errors = notFoundException.Message });
+            await context.Response.WriteAsync(result);
         }
         catch (Exception e) {
             context.Response.StatusCode = 500;
-            await context.Response.WriteAsync("Something went wrong\n" + e.Message);
+            var result = JsonSerializer.Serialize(new { errors = "Something went wrong" });
+            await context.Response.WriteAsync(result);
         }
 
     }

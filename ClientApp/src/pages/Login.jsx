@@ -47,13 +47,14 @@ const Login = () => {
             navigate('/')
         }
         catch (err) {
+            console.log(err)
             const errors = err.data.errors
 
             if (errors) {
-                setEmailErrText(errors[0]);
+                setEmailErrText(errors);
             }
             if (errors) {
-                setPasswordErrText(errors[0]);
+                setPasswordErrText(errors);
             }
 
             setLoading(false)
