@@ -56,19 +56,14 @@ public class BoardService : IBoardService {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
+            .Include(ub => ub.Board)
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
 
         if(ub == null) {
             throw new NotFoundException("There is no connection between the user and the board.");
         }
 
-        var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
-
-        if(board == null) {
-            throw new NotFoundException("Board not found");
-        }
-
-        var boardDto = _mapper.Map<BoardDto>(board);
+        var boardDto = _mapper.Map<BoardDto>(ub.Board);
 
         return boardDto;
     }
