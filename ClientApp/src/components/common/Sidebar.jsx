@@ -27,19 +27,13 @@ const Sidebar = () => {
                     navigate(`/boards/${res[0].id}`)
                 }
             } catch(err) {
-                alert(err)
+                alert(err.data.errors)
             }
         }
 
         getBoards()
     }, [])
 
-    useEffect(() => {
-        if (boards.length > 0 && boardId === undefined) {
-          navigate(`/boards/${boards[0].id}`)
-        }
-    }, [boards, boardId, navigate])
-    
     const logout = () => {
         localStorage.removeItem('token')
         navigate('/login')
@@ -52,7 +46,7 @@ const Sidebar = () => {
             dispatch(setBoards(newList))
             navigate(`/boards/${res.id}`)
         } catch (err) {
-            alert(err)
+            alert(err.data.errors)
         }
     }
 

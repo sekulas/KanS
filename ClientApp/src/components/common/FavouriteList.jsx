@@ -16,7 +16,7 @@ const FavouriteList = () => {
         const res = await boardApi.getAllFavouritesForUser();
         dispatch(setFavouriteList(res));
       } catch (err) {
-        alert(err);
+        alert(err.data.errors);
       }
     };
 

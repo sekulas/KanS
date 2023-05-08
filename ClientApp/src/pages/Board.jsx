@@ -31,7 +31,7 @@ const Board = () => {
                 setSections(res.sections)
                 setIsFavourite(res.favourite)
             } catch(err) {
-                alert(err)
+                alert(err.data.errors)
             }
         }
 
@@ -45,7 +45,7 @@ const Board = () => {
             const res = await boardApi.getAllFavouritesForUser();
             dispatch(setFavouriteList(res));
         } catch(err) {
-            alert(err)
+            alert(err.data.errors)
         }
     }
 
@@ -70,7 +70,7 @@ const Board = () => {
             dispatch(setBoards(newList))
             
         } catch(err) {
-            alert(err)
+            alert(err.data.errors)
         }
     }
 
