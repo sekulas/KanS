@@ -31,7 +31,8 @@ const Board = () => {
                 setSections(res.sections)
                 setIsFavourite(res.favourite)
             } catch(err) {
-                alert(err.data.errors)
+                alert(err.data.errors + "\n\nNavigating to existing board.")
+                navigate(`/boards/${boards[0].id}`)
             }
         }
 
