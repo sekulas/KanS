@@ -44,7 +44,7 @@ public class BoardController : ControllerBase {
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<BoardDto>> GetBoardById([FromRoute] int id) {
+    public async Task<ActionResult<BoardWithSectionsDto>> GetBoardById([FromRoute] int id) {
         var board = await _boardService.GetBoardById(id);
 
         return Ok(board);

@@ -2,6 +2,7 @@
 using KanS.Entities;
 using KanS.Exceptions;
 using KanS.Interfaces;
+using KanS.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanS.Services;
@@ -52,18 +53,24 @@ public class BoardService : IBoardService {
         return nextId;
     }
 
-    public async Task<BoardDto> GetBoardById(int boardId) {
+    public async Task<BoardWithSectionsDto> GetBoardById(int boardId) {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
             .Include(ub => ub.Board)
+                .ThenInclude(b => b.Sections)
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
 
         if(ub == null) {
-            throw new NotFoundException("There is no connection between the user and the board.");
+            throw new NotFoundException("Board not found.");
         }
 
-        var boardDto = _mapper.Map<BoardDto>(ub.Board);
+        var sectionsDto = ub.Board.Sections
+            .Select(s => _mapper.Map<SectionDto>(s))
+            .ToList();
+
+        var boardDto = _mapper.Map<BoardWithSectionsDto>(ub.Board);
+        boardDto.Sections = sectionsDto;
 
         return boardDto;
     }
@@ -73,7 +80,7 @@ public class BoardService : IBoardService {
         var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
 
         if(board == null) {
-            throw new NotFoundException("Board not found");
+            throw new NotFoundException("Board not found.");
         }
 
         if(boardDto.Name != null) {

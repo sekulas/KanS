@@ -60,6 +60,7 @@ builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IBoardService, BoardService>();
+builder.Services.AddScoped<ISectionService, SectionService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();

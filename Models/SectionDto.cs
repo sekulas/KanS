@@ -1,9 +1,8 @@
 ﻿namespace KanS.Entities;
 
-public class Section {
+public class SectionDto {
     public int Id { get; set; }
     public int BoardId { get; set; }
-    public virtual Board Board { get; set; }
     public string Name { get; set; }
-    public virtual ICollection<Job> Tasks { get; set; }
+    public ICollection<Job> Tasks { get; set; }
 }

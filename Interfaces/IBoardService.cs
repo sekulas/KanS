@@ -6,7 +6,7 @@ namespace KanS.Interfaces;
 
 public interface IBoardService {
     Task<int> CreateBoard();
-    Task<BoardDto> GetBoardById(int boardId);
+    Task<BoardWithSectionsDto> GetBoardById(int boardId);
     Task<List<BoardDto>> GetAllBoardsForUser();
     Task<List<BoardDto>> GetAllFavouriteBoardsForUser();
     Task UpdateBoard(int boardId, BoardUpdateDto boardDto);

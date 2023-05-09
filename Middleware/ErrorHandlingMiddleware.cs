@@ -21,7 +21,7 @@ public class ErrorHandlingMiddleware : IMiddleware {
         }
         catch (Exception e) {
             context.Response.StatusCode = 500;
-            var result = JsonSerializer.Serialize(new { errors = "Something went wrong" });
+            var result = JsonSerializer.Serialize(new { errors = "Something went wrong - " + e.Message });
             await context.Response.WriteAsync(result);
         }
 

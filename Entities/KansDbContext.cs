@@ -52,7 +52,7 @@ public class KansDbContext : DbContext {
         modelBuilder.Entity<Board>()
             .HasMany(b => b.Sections)
             .WithOne(s => s.Board)
-            .HasForeignKey(b => b.Id);
+            .HasForeignKey(b => b.BoardId);
 
         // Configure Section entity
         modelBuilder.Entity<Section>()
@@ -62,7 +62,7 @@ public class KansDbContext : DbContext {
         modelBuilder.Entity<Section>()
             .HasMany(s => s.Tasks)
             .WithOne(t => t.Section)
-            .HasForeignKey(s => s.Id);
+            .HasForeignKey(s => s.SectionId);
 
         // Configure Job entity
         modelBuilder.Entity<Job>()
