@@ -6,4 +6,5 @@ public class Section {
     public virtual Board Board { get; set; }
     public string Name { get; set; }
     public virtual ICollection<Job> Tasks { get; set; }
+    public bool Deleted { get; set; }
 }

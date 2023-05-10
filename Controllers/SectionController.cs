@@ -1,5 +1,6 @@
 ﻿using KanS.Entities;
 using KanS.Interfaces;
+using KanS.Models;
 using KanS.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +27,28 @@ public class SectionController : ControllerBase {
         return Ok(section);
     }
 
+    [HttpPut("{sectionId}")]
+    public async Task<ActionResult> UpdateSection([FromRoute] int sectionId, [FromBody] SectionUpdateDto sectionDto) {
+
+        await _sectionService.UpdateSection(sectionId, sectionDto);
+
+        return Ok();
+    }
+
+    [HttpDelete("{sectionId}")]
+    public async Task<ActionResult> RemoveSection([FromRoute] int boardId, [FromRoute] int sectionId) {
+
+        await _sectionService.RemoveSection(sectionId, boardId);
+
+        return Ok();
+    }
+
     [HttpGet]
-    public async Task<ActionResult<Section>> GetSectionById(int sectionId) {
+    public async Task<ActionResult<SectionDto>> GetSectionById(int sectionId) {
 
-        var section = await _sectionService.GetSectionById(sectionId);
+        var sectionDto = await _sectionService.GetSectionById(sectionId);
 
-        return Ok(section);
+        return Ok(sectionDto);
     }
 
 }

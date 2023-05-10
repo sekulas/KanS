@@ -64,6 +64,10 @@ public class KansDbContext : DbContext {
             .WithOne(t => t.Section)
             .HasForeignKey(s => s.SectionId);
 
+        modelBuilder.Entity<Section>()
+            .Property(s => s.Deleted)
+            .HasDefaultValue(false);
+
         // Configure Job entity
         modelBuilder.Entity<Job>()
             .Property(j => j.Name)

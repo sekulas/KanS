@@ -58,7 +58,7 @@ public class BoardService : IBoardService {
 
         var ub = await _context.UserBoards
             .Include(ub => ub.Board)
-                .ThenInclude(b => b.Sections)
+                .ThenInclude(b => b.Sections.Where(s => !s.Deleted))
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
 
         if(ub == null) {
