@@ -18,13 +18,13 @@ public class SectionController : ControllerBase {
     }
     
     [HttpPost]
-    public async Task<ActionResult<Section>> CreateSection([FromRoute] int boardId) {
+    public async Task<ActionResult<SectionDto>> CreateSection([FromRoute] int boardId) {
 
         var sectionId = await _sectionService.CreateSection(boardId);
 
-        var section = await _sectionService.GetSectionById(sectionId);
+        var sectionDto = await _sectionService.GetSectionById(sectionId);
 
-        return Ok(section);
+        return CreatedAtAction(nameof(CreateSection), new { id = sectionDto.Id }, sectionDto);
     }
 
     [HttpPut("{sectionId}")]
@@ -43,8 +43,8 @@ public class SectionController : ControllerBase {
         return Ok();
     }
 
-    [HttpGet]
-    public async Task<ActionResult<SectionDto>> GetSectionById(int sectionId) {
+    [HttpGet("{sectionId}")]
+    public async Task<ActionResult<SectionDto>> GetSectionById([FromRoute] int sectionId) {
 
         var sectionDto = await _sectionService.GetSectionById(sectionId);
 
