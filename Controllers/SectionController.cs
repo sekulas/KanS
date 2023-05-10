@@ -22,7 +22,7 @@ public class SectionController : ControllerBase {
 
         var sectionId = await _sectionService.CreateSection(boardId);
 
-        var sectionDto = await _sectionService.GetSectionById(sectionId);
+        var sectionDto = await _sectionService.GetSectionById(boardId, sectionId);
 
         return CreatedAtAction(nameof(CreateSection), new { id = sectionDto.Id }, sectionDto);
     }
@@ -38,15 +38,15 @@ public class SectionController : ControllerBase {
     [HttpDelete("{sectionId}")]
     public async Task<ActionResult> RemoveSection([FromRoute] int boardId, [FromRoute] int sectionId) {
 
-        await _sectionService.RemoveSection(sectionId, boardId);
+        await _sectionService.RemoveSection(boardId, sectionId);
 
         return Ok();
     }
 
     [HttpGet("{sectionId}")]
-    public async Task<ActionResult<SectionDto>> GetSectionById([FromRoute] int sectionId) {
+    public async Task<ActionResult<SectionDto>> GetSectionById([FromRoute] int boardId, [FromRoute] int sectionId) {
 
-        var sectionDto = await _sectionService.GetSectionById(sectionId);
+        var sectionDto = await _sectionService.GetSectionById(boardId, sectionId);
 
         return Ok(sectionDto);
     }

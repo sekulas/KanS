@@ -41,7 +41,15 @@ public class SectionService : ISectionService {
         return nextId;
     }
 
-    public async Task<SectionDto> GetSectionById(int sectionId) {
+    public async Task<SectionDto> GetSectionById(int boardId, int sectionId) {
+        var userId = (int) _userContextService.GetUserId;
+
+        var ub = await _context.UserBoards
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+
+        if(ub == null) {
+            throw new NotFoundException("Cannot remove a section - Board not found.");
+        }
         var section = await _context.Sections
             .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted);
 
@@ -54,7 +62,7 @@ public class SectionService : ISectionService {
         return sectionDto;
     }
 
-    public async Task RemoveSection(int sectionId, int boardId) {
+    public async Task RemoveSection(int boardId, int sectionId) {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
@@ -79,6 +87,26 @@ public class SectionService : ISectionService {
     }
 
     public async Task UpdateSection([FromRoute] int sectionId, [FromBody] SectionUpdateDto sectionDto) {
-        throw new NotImplementedException();
+        var userId = (int) _userContextService.GetUserId;
+
+        var ub = await _context.UserBoards
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == sectionDto.BoardId && !ub.Deleted);
+
+        if(ub == null) {
+            throw new NotFoundException("Cannot remove a section - Board not found.");
+        }
+
+        var section = await _context.Sections
+            .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted);
+
+        if(section == null) {
+            throw new NotFoundException("Section to update not found.");
+        }
+
+        if(sectionDto.Name != null) {
+            section.Name = sectionDto.Name == "" ? "Untitled" : sectionDto.Name;
+        }
+
+        await _context.SaveChangesAsync();
     }
 }

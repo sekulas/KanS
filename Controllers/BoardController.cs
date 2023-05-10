@@ -27,10 +27,10 @@ public class BoardController : ControllerBase {
         return CreatedAtAction(nameof(GetBoardById), new { id = board.Id }, board);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateBoard([FromRoute] int id, [FromBody] BoardUpdateDto boardDto) {
+    [HttpPut("{sectionId}")]
+    public async Task<ActionResult> UpdateBoard([FromRoute] int sectionId, [FromBody] BoardUpdateDto boardDto) {
 
-        await _boardService.UpdateBoard(id, boardDto);
+        await _boardService.UpdateBoard(sectionId, boardDto);
 
         return Ok();
     }
