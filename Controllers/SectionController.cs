@@ -40,7 +40,7 @@ public class SectionController : ControllerBase {
 
         await _sectionService.RemoveSection(boardId, sectionId);
 
-        return Ok();
+        return NoContent();
     }
 
     [HttpGet("{sectionId}")]

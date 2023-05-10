@@ -40,7 +40,7 @@ public class BoardController : ControllerBase {
 
         await _boardService.RemoveBoard(boardId);
 
-        return Ok();
+        return NoContent();
     }
 
     [HttpGet("{id}")]
