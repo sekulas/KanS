@@ -8,6 +8,7 @@ import StarOutlinedIcon from '@mui/icons-material/StarOutlined'
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import boardApi from '../api/boardApi'
+import Kanban from '../components/common/Kanban'
 
 const Board = () => {
     const { boardId } = useParams()
@@ -123,19 +124,7 @@ const Board = () => {
                     />
                 </Box>
                 <Box>
-                    <Box sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
-                    }}>
-                        <Button>
-                            Add section
-                        </Button>
-                        <Typography variant='body2' fontWeight='7'>
-                            {sections.length} Sections
-                        </Typography>
-                    </Box>
-                    <Divider sx={{ margin: '10px 0'}}/>
+                    <Kanban data={sections} boardId={boardId}/>
                 </Box>
             </Box>
         </>
