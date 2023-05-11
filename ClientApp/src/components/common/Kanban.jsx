@@ -67,7 +67,7 @@ const Kanban = (props) => {
                                                         sx={{
                                                             flexGrow: 1,
                                                             '& .MuiOutlinedInput-input': {padding: 0},
-                                                            '& .MuiOutlinedInput-notchedOutlined': {border: 'unset'},
+                                                            '& .MuiOutlinedInput-notchedOutline': {border: 'unset'},
                                                             '& .MuiOutlinedInput-root': {fontSize: '1rem', fontWeight: '700'},
                                                         }}
                                                     />
