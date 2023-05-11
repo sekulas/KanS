@@ -4,6 +4,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import assets from '../../assets/index'
+import sectionApi from '../../api/sectionApi'
 
 const Kanban = (props) => {
     const boardId = props.boardId
@@ -17,6 +18,27 @@ const Kanban = (props) => {
         
     }
 
+    const createSection = async () => {
+        try {
+            const section = await sectionApi.create(boardId)
+            setData([...data, section])
+        }
+        catch (err) {
+            alert(err.data.errors)
+        }
+    }
+
+    const removeSection = async (sectionId) => {
+        try {
+            await sectionApi.remove(boardId, sectionId)
+            const newData = [...data].filter(e => e.id != sectionId)
+            setData(newData)
+        }
+        catch (err) {
+            alert(err.data.errors)
+        }
+    }
+
     return (
         <>
             <Box sx={{
@@ -24,11 +46,11 @@ const Kanban = (props) => {
                 alignItems: 'center',
                 justifyContent: 'space-between'
             }}>
-                <Button>
+                <Button onClick={createSection}>
                     Add section
                 </Button>
                 <Typography variant='body2' fontWeight='7'>
-                    {/* {sections.length} Sections */}
+                    {data.length} Sections 
                 </Typography>
             </Box>
             <Divider sx={{ margin: '10px 0' }} />
@@ -40,7 +62,7 @@ const Kanban = (props) => {
                     overflowX: 'auto'
                 }}>
                     {
-                        data.map((section, index) => (
+                        data.map((section) => (
                             <div key={section.id} style={{width: '300px'}}>
                                 <Droppable key={section.id} droppableId={section.id.toString()}>
                                     {
@@ -62,7 +84,7 @@ const Kanban = (props) => {
                                                 }}>
                                                     <TextField
                                                         value={section.name}
-                                                        placeholder= {`New Section #${index}`}
+                                                        placeholder= {'Untitled'}
                                                         variant='outlined'
                                                         sx={{
                                                             flexGrow: 1,
@@ -88,6 +110,7 @@ const Kanban = (props) => {
                                                             color: 'gray',
                                                             '&:hover': {color: assets.colors.error}
                                                         }}
+                                                        onClick={() => removeSection(section.id)}
                                                     >
                                                         <DeleteOutlinedIcon/>
                                                     </IconButton>
