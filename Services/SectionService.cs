@@ -48,7 +48,7 @@ public class SectionService : ISectionService {
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
 
         if(ub == null) {
-            throw new NotFoundException("Cannot remove a section - Board not found.");
+            throw new NotFoundException("Cannot get a section - Board not found.");
         }
         var section = await _context.Sections
             .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted);
@@ -93,7 +93,7 @@ public class SectionService : ISectionService {
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == sectionDto.BoardId && !ub.Deleted);
 
         if(ub == null) {
-            throw new NotFoundException("Cannot remove a section - Board not found.");
+            throw new NotFoundException("Cannot update a section - Board not found.");
         }
 
         var section = await _context.Sections
