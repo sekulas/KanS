@@ -30,6 +30,7 @@ public class SectionService : ISectionService {
         int nextId = board.Sections.Count + 1;
 
         Section section = new Section() {
+            Id = nextId,
             BoardId = boardId,
             Name = $"New Section #{nextId}"
         };

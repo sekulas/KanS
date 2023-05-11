@@ -22,13 +22,7 @@ public class BoardService : IBoardService {
         var userId = (int) _userContextService.GetUserId;
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-        int nextId = 1;
-        bool anyBoardsExist = await _context.Boards.AnyAsync();
-
-        if(anyBoardsExist) {
-            int maxId = await _context.Boards.MaxAsync(u => u.Id);
-            nextId = maxId + 1;
-        }
+        int nextId = await _context.Boards.CountAsync() + 1;
 
         Board board = new Board() {
             Id = nextId,
