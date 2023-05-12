@@ -27,15 +27,15 @@ public class SectionService : ISectionService {
             throw new NotFoundException("Cannot add section to non-existing board.");
         }
 
-        int nextId = board.Sections.Count + 1;
+        int nextId = await _context.Sections.CountAsync() + 1;
 
         Section section = new Section() {
             Id = nextId,
             BoardId = boardId,
-            Name = $"New Section #{nextId}"
+            Name = ""
         };
 
-        board.Sections.Add(section);
+        await _context.Sections.AddAsync(section);
 
         await _context.SaveChangesAsync();
 
