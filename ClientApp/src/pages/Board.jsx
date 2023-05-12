@@ -76,6 +76,34 @@ const Board = () => {
         }
     }
 
+    const changeBoardName = async (e) => {
+        const newName = e.target.value
+        setName(newName)
+    }
+
+    const updateBoardName = async (e) => {
+        try {
+            await boardApi.update(boardId, {name: e.target.value})
+        }
+        catch (err) {
+            alert(err.data.errors)
+        }
+    }
+
+    const changeBoardDesc = async (e) => {
+        const newDesc = e.target.value
+        setDescription(newDesc)
+    }
+
+    const updateBoardDesc = async (e) => {
+        try {
+            await boardApi.update(boardId, {description: e.target.value})
+        }
+        catch (err) {
+            alert(err.data.errors)
+        }
+    }
+
     return (
         <>
             <Box sx={{
@@ -101,6 +129,8 @@ const Board = () => {
                 <Box>
                     <TextField
                         value={name}
+                        onChange={(e) => changeBoardName(e)}
+                        onBlur={(e) => updateBoardName(e)}
                         placeholder='New Board #?'
                         variant='outlined'
                         fullWidth
@@ -112,6 +142,8 @@ const Board = () => {
                     />
                     <TextField
                         value={description}
+                        onChange={(e) => changeBoardDesc(e)}
+                        onBlur={(e) => updateBoardDesc(e)}
                         placeholder='Description goes here...'
                         variant='outlined'
                         multiline
