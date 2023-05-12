@@ -39,6 +39,25 @@ const Kanban = (props) => {
         }
     }
 
+    const changeSectionTitle = async (e, sectionId) => {
+        console.log(e)
+        const newName = e.target.value
+        const newData = [...data]
+        const index = newData.findIndex(e => e.id == sectionId)
+        newData[index].name = newName
+        setData(newData)
+    }
+
+    const updateSectionTitle = async (e, sectionId) => {
+        console.log(e)
+        try {
+            await sectionApi.update(sectionId, {boardId: boardId, name: e.name})
+        }
+        catch (err) {
+            alert(err.data.errors)
+        }
+    }
+
     return (
         <>
             <Box sx={{
@@ -62,7 +81,7 @@ const Kanban = (props) => {
                     overflowX: 'auto'
                 }}>
                     {
-                        data.map((section) => (
+                        data.map((section, index) => (
                             <div key={section.id} style={{width: '300px'}}>
                                 <Droppable key={section.id} droppableId={section.id.toString()}>
                                     {
@@ -84,7 +103,9 @@ const Kanban = (props) => {
                                                 }}>
                                                     <TextField
                                                         value={section.name}
-                                                        placeholder= {'Untitled'}
+                                                        onChange={(e) => changeSectionTitle(e, console.log("secId"+section.id))}
+                                                        onBlur={(e) => updateSectionTitle(e, section.id)}
+                                                        placeholder= {`New Section #${index}`}
                                                         variant='outlined'
                                                         sx={{
                                                             flexGrow: 1,
