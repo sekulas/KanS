@@ -40,7 +40,6 @@ const Kanban = (props) => {
     }
 
     const changeSectionTitle = async (e, sectionId) => {
-        console.log(e)
         const newName = e.target.value
         const newData = [...data]
         const index = newData.findIndex(e => e.id == sectionId)
@@ -49,9 +48,8 @@ const Kanban = (props) => {
     }
 
     const updateSectionTitle = async (e, sectionId) => {
-        console.log(e)
         try {
-            await sectionApi.update(sectionId, {boardId: boardId, name: e.name})
+            await sectionApi.update(boardId, sectionId, {boardId: boardId, name: e.target.value})
         }
         catch (err) {
             alert(err.data.errors)
@@ -103,7 +101,7 @@ const Kanban = (props) => {
                                                 }}>
                                                     <TextField
                                                         value={section.name}
-                                                        onChange={(e) => changeSectionTitle(e, console.log("secId"+section.id))}
+                                                        onChange={(e) => changeSectionTitle(e, section.id)}
                                                         onBlur={(e) => updateSectionTitle(e, section.id)}
                                                         placeholder= {`New Section #${index}`}
                                                         variant='outlined'
