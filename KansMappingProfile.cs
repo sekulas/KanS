@@ -11,6 +11,7 @@ public class KansMappingProfile : Profile {
         CreateMap<Board, BoardWithSectionsDto>();
         CreateMap<Board, BoardDto>();
         CreateMap<Section, SectionDto>();
+        CreateMap<Job, JobDto>();
 
     }
 }

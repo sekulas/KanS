@@ -53,6 +53,7 @@ public class BoardService : IBoardService {
         var ub = await _context.UserBoards
             .Include(ub => ub.Board)
                 .ThenInclude(b => b.Sections.Where(s => !s.Deleted))
+                    .ThenInclude(s => s.Tasks.Where(t => !t.Deleted))
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
 
         if(ub == null) {
@@ -62,6 +63,15 @@ public class BoardService : IBoardService {
         var sectionsDto = ub.Board.Sections
             .Select(s => _mapper.Map<SectionDto>(s))
             .ToList();
+
+        foreach(var section in sectionsDto) {
+            var targetSection = ub.Board.Sections
+                                .FirstOrDefault(s => s.Id == section.Id);
+
+            section.Tasks = targetSection.Tasks
+                                .Select(t => _mapper.Map<Job, JobDto>(t))
+                                .ToList();
+        };
 
         var boardDto = _mapper.Map<BoardWithSectionsDto>(ub.Board);
         boardDto.Sections = sectionsDto;

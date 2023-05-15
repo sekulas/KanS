@@ -71,11 +71,15 @@ public class KansDbContext : DbContext {
         // Configure Job entity
         modelBuilder.Entity<Job>()
             .Property(j => j.Name)
-            .HasDefaultValue("New Task");
+            .HasDefaultValue("");
 
         modelBuilder.Entity<Job>()
-            .Property(j => j.Description)
+            .Property(j => j.AssignedTo)
             .HasDefaultValue("");
+
+        modelBuilder.Entity<Job>()
+            .Property(j => j.Deleted)
+            .HasDefaultValue(false);
 
     }
 
