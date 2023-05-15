@@ -19,11 +19,13 @@ public class SectionService : ISectionService {
         _mapper = mapper;
     }
     public async Task<int> CreateSection(int boardId) {
-        var board = await _context.Boards
-            .Include(b => b.Sections)
-            .FirstOrDefaultAsync(b => b.Id == boardId);
+        var userId = (int) _userContextService.GetUserId;
 
-        if(board == null) {
+        var ub = await _context.UserBoards
+            .Include(ub => ub.Board)
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+
+        if(ub == null) {
             throw new NotFoundException("Cannot add section to non-existing board.");
         }
 
@@ -87,7 +89,7 @@ public class SectionService : ISectionService {
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateSection([FromRoute] int sectionId, [FromBody] SectionUpdateDto sectionDto) {
+    public async Task UpdateSection(int sectionId, SectionUpdateDto sectionDto) {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
