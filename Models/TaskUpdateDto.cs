@@ -1,6 +1,6 @@
 ﻿namespace KanS.Models;
 
-public class JobUpdateDto {
+public class TaskUpdateDto {
     public int? SectionId { get; set; }
     public string? Name { get; set; }
     public string? AssignedTo { get; set; }

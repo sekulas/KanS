@@ -4,22 +4,21 @@ using KanS.Exceptions;
 using KanS.Interfaces;
 using KanS.Models;
 using Microsoft.EntityFrameworkCore;
-using static System.Collections.Specialized.BitVector32;
 
 namespace KanS.Services;
 
-public class JobService : IJobService {
+public class TaskService : ITaskService {
     private readonly KansDbContext _context;
     private readonly IUserContextService _userContextService;
     private readonly IMapper _mapper;
 
-    public JobService(KansDbContext context, IUserContextService userContextService, IMapper mapper) {
+    public TaskService(KansDbContext context, IUserContextService userContextService, IMapper mapper) {
         _context = context;
         _userContextService = userContextService;
         _mapper = mapper;
     }
 
-    public async Task<int> CreateJob(int boardId, int sectionId) {
+    public async Task<int> CreateTask(int boardId, int sectionId) {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
@@ -36,23 +35,23 @@ public class JobService : IJobService {
 
         int position = section.Tasks.Count() + 1;
 
-        int nextId = await _context.Jobs.CountAsync() + 1;
+        int nextId = await _context.Tasks.CountAsync() + 1;
 
-        Job job = new Job() {
+        TaskE task = new TaskE() {
             Id = nextId,
             BoardId = boardId,
             SectionId = sectionId,
             Position = position,
         };
 
-        await _context.Jobs.AddAsync(job);
+        await _context.Tasks.AddAsync(task);
 
         await _context.SaveChangesAsync();
 
         return nextId;
     }
 
-    public async Task<JobDto> GetJobById(int boardId, int jobId) {
+    public async Task<TaskDto> GetTaskById(int boardId, int taskId) {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
@@ -62,19 +61,19 @@ public class JobService : IJobService {
             throw new NotFoundException("Cannot get a task - Board not found.");
         }
 
-        var job = await _context.Jobs
-            .FirstOrDefaultAsync(j => j.Id == jobId && !j.Deleted && j.BoardId == boardId);
+        var task = await _context.Tasks
+            .FirstOrDefaultAsync(j => j.Id == taskId && !j.Deleted && j.BoardId == boardId);
 
-        if(job == null) {
+        if(task == null) {
             throw new NotFoundException("Task not found.");
         }
 
-        var jobDto = _mapper.Map<JobDto>(job);
+        var taskDto = _mapper.Map<TaskDto>(task);
 
-        return jobDto;
+        return taskDto;
     }
 
-    public async Task RemoveJob(int boardId, int jobId) {
+    public async Task RemoveTask(int boardId, int taskId) {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
@@ -84,19 +83,19 @@ public class JobService : IJobService {
             throw new NotFoundException("Cannot remove a task - Board not found.");
         }
 
-        var job = await _context.Jobs
-            .FirstOrDefaultAsync(j => j.Id == jobId && !j.Deleted && j.BoardId == boardId);
+        var task = await _context.Tasks
+            .FirstOrDefaultAsync(j => j.Id == taskId && !j.Deleted && j.BoardId == boardId);
 
-        if( job == null) {
+        if( task == null) {
             throw new NotFoundException("There is no task like this to remove");
         }
 
-        job.Deleted = true;
+        task.Deleted = true;
 
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateJob(int boardId, int jobId, JobUpdateDto jobDto) {
+    public async Task UpdateTask(int boardId, int taskId, TaskUpdateDto taskDto) {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
@@ -106,32 +105,32 @@ public class JobService : IJobService {
             throw new NotFoundException("Cannot update a task - Board not found.");
         }
 
-        var job = await _context.Jobs
-                    .FirstOrDefaultAsync(j => j.Id == jobId && !j.Deleted && j.BoardId == boardId);
+        var task = await _context.Tasks
+                    .FirstOrDefaultAsync(j => j.Id == taskId && !j.Deleted && j.BoardId == boardId);
 
-        if(job == null) {
+        if(task == null) {
             throw new NotFoundException("There is no task like this to update");
         }
 
-        if(jobDto.SectionId != null) {
+        if(taskDto.SectionId != null && taskDto.SectionId != task.SectionId) {
             var newSection = await _context.Sections
-                                .FirstOrDefaultAsync(s => s.Id == jobDto.SectionId);
+                                .FirstOrDefaultAsync(s => s.Id == taskDto.SectionId);
 
             if( newSection != null && newSection.BoardId == boardId ) {
-                job.SectionId = (int) jobDto.SectionId;
+                task.SectionId = (int) taskDto.SectionId;
             }
             else {
                 throw new NotFoundException("Cannot find newly specified section for task.");
             }
         }
-        if(jobDto.Name != null) {
-            job.Name = jobDto.Name;
+        if(taskDto.Name != null) {
+            task.Name = taskDto.Name;
         }
-        if(jobDto.AssignedTo != null) {
-            job.AssignedTo = jobDto.AssignedTo;
+        if(taskDto.AssignedTo != null) {
+            task.AssignedTo = taskDto.AssignedTo;
         }
-        if(jobDto.Position != null) {
-            job.Position = (int) jobDto.Position;
+        if(taskDto.Position != null) {
+            task.Position = (int) taskDto.Position;
         }
 
         await _context.SaveChangesAsync();

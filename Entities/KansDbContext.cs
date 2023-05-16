@@ -9,7 +9,7 @@ public class KansDbContext : DbContext {
     public DbSet<UserBoard> UserBoards { get; set; }
     public DbSet<Board> Boards { get; set; }
     public DbSet<Section> Sections { get; set; }
-    public DbSet<Job> Jobs { get; set; }
+    public DbSet<TaskE> Tasks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -69,15 +69,15 @@ public class KansDbContext : DbContext {
             .HasDefaultValue(false);
 
         // Configure Job entity
-        modelBuilder.Entity<Job>()
+        modelBuilder.Entity<TaskE>()
             .Property(j => j.Name)
             .HasDefaultValue("");
 
-        modelBuilder.Entity<Job>()
+        modelBuilder.Entity<TaskE>()
             .Property(j => j.AssignedTo)
             .HasDefaultValue("");
 
-        modelBuilder.Entity<Job>()
+        modelBuilder.Entity<TaskE>()
             .Property(j => j.Deleted)
             .HasDefaultValue(false);
 

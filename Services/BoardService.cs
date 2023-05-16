@@ -69,7 +69,7 @@ public class BoardService : IBoardService {
                                 .FirstOrDefault(s => s.Id == section.Id);
 
             section.Tasks = targetSection.Tasks
-                                .Select(t => _mapper.Map<Job, JobDto>(t))
+                                .Select(t => _mapper.Map<TaskE, TaskDto>(t))
                                 .ToList();
         };
 

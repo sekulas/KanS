@@ -3,7 +3,6 @@ using KanS.Entities;
 using KanS.Exceptions;
 using KanS.Interfaces;
 using KanS.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanS.Services;
@@ -63,7 +62,7 @@ public class SectionService : ISectionService {
         }
 
         var sectionDto = _mapper.Map<SectionDto>(section);
-        sectionDto.Tasks = section.Tasks.Select(t => _mapper.Map<JobDto>(t)).ToList();
+        sectionDto.Tasks = section.Tasks.Select(t => _mapper.Map<TaskDto>(t)).ToList();
 
         return sectionDto;
     }
