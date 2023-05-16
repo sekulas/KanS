@@ -1,13 +1,12 @@
 import axiosClient from "./axiosClient";
 
 const taskApi = {
-  create: (boardId, sectionId) =>
-    axiosClient.post(`board/${boardId}/section/${sectionId}/task`),
-  updatePosition: (boardId, sectionId, taskId, params) =>
-    axiosClient.put(
-      `board/${boardId}/section/${sectionId}/task/${taskId}`,
-      params
-    ),
-  remove: (boardId, sectionId, taskId) =>
-    axiosClient.delete(`board/${boardId}/section/${sectionId}/task/${taskId}`),
+  create: (boardId, params) =>
+    axiosClient.post(`board/${boardId}/task`, params),
+  update: (boardId, taskId, params) =>
+    axiosClient.put(`board/${boardId}/task/${taskId}`, params),
+  remove: (boardId, taskId) =>
+    axiosClient.delete(`board/${boardId}/task/${taskId}`),
 };
+
+export default taskApi;

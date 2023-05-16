@@ -156,7 +156,7 @@ const Board = () => {
                     />
                 </Box>
                 <Box>
-                    <Kanban data={sections} boardId={boardId}/>
+                    <Kanban sections={sections} boardId={boardId}/>
                 </Box>
             </Box>
         </>
