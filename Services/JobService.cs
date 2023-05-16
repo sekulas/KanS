@@ -31,7 +31,7 @@ public class JobService : IJobService {
 
         var section = await _context.Sections
             .Include(s => s.Tasks)
-            .FirstOrDefaultAsync(s => s.Id == sectionId);
+            .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted && s.BoardId == boardId);
 
         int position = section.Tasks.Count() + 1;
 
@@ -62,7 +62,7 @@ public class JobService : IJobService {
         }
 
         var job = await _context.Jobs
-            .FirstOrDefaultAsync(j => j.Id == jobId && !j.Deleted);
+            .FirstOrDefaultAsync(j => j.Id == jobId && !j.Deleted && j.BoardId == boardId);
 
         if(job == null) {
             throw new NotFoundException("Task not found.");
@@ -73,8 +73,26 @@ public class JobService : IJobService {
         return jobDto;
     }
 
-    public async Task RemoveJob(int boardId, int sectionId, int jobId) {
-        throw new NotImplementedException();
+    public async Task RemoveJob(int boardId, int jobId) {
+        var userId = (int) _userContextService.GetUserId;
+
+        var ub = await _context.UserBoards
+                    .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+        
+        if(ub == null) {
+            throw new NotFoundException("Cannot remove a section - Board not found.");
+        }
+
+        var job = await _context.Jobs
+            .FirstOrDefaultAsync(j => j.Id == jobId && !j.Deleted && j.BoardId == boardId);
+
+        if( job == null) {
+            throw new NotFoundException("There is no task like this to remove");
+        }
+
+        job.Deleted = true;
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateJob(int boardId, int sectionId, int jobId, JobUpdateDto jobDto) {

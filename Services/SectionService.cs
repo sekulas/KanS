@@ -53,14 +53,17 @@ public class SectionService : ISectionService {
         if(ub == null) {
             throw new NotFoundException("Cannot get a section - Board not found.");
         }
+
         var section = await _context.Sections
-            .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted);
+            .Include(s => s.Tasks.Where(t => !t.Deleted))
+            .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted && s.BoardId == boardId);
 
         if(section == null) {
             throw new NotFoundException("Section not found.");
         }
 
         var sectionDto = _mapper.Map<SectionDto>(section);
+        sectionDto.Tasks = section.Tasks.Select(t => _mapper.Map<JobDto>(t)).ToList();
 
         return sectionDto;
     }
@@ -78,7 +81,7 @@ public class SectionService : ISectionService {
         }
 
         var section = ub.Board.Sections
-            .FirstOrDefault(s => s.Id == sectionId && !s.Deleted);
+            .FirstOrDefault(s => s.Id == sectionId && !s.Deleted && s.BoardId == boardId);
 
         if(section == null) {
             throw new NotFoundException("There is no section like this to remove");
@@ -100,7 +103,7 @@ public class SectionService : ISectionService {
         }
 
         var section = await _context.Sections
-            .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted);
+            .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted && s.BoardId == sectionDto.BoardId);
 
         if(section == null) {
             throw new NotFoundException("Section to update not found.");

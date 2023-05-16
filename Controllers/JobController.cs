@@ -33,4 +33,12 @@ public class JobController : ControllerBase {
 
         return Ok(jobDto);
     }
+
+    [HttpDelete("{jobId}")]
+    public async Task<ActionResult> RemoveSection([FromRoute] int boardId, [FromRoute] int jobId) {
+
+        await _jobService.RemoveJob(boardId, jobId);
+
+        return NoContent();
+    }
 }
