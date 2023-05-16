@@ -47,6 +47,8 @@ builder.Services.AddCors(options => {
 
 builder.Services.AddControllers();
 
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 
@@ -74,6 +76,11 @@ var app = builder.Build();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseAuthentication();
+
+if(app.Environment.IsDevelopment()) {
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
