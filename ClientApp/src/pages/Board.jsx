@@ -131,7 +131,7 @@ const Board = () => {
                         value={name}
                         onChange={(e) => changeBoardName(e)}
                         onBlur={(e) => updateBoardName(e)}
-                        placeholder='New Board #?'
+                        placeholder='Untitled'
                         variant='outlined'
                         fullWidth
                         sx={{

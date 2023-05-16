@@ -88,7 +88,7 @@ public class BoardService : IBoardService {
         }
 
         if(boardDto.Name != null) {
-            board.Name = boardDto.Name == "" ? "Untitled" : boardDto.Name;
+            board.Name = boardDto.Name;
         }
         if(boardDto.Description != null) {
             board.Description = boardDto.Description;

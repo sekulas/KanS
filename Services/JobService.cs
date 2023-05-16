@@ -4,6 +4,7 @@ using KanS.Exceptions;
 using KanS.Interfaces;
 using KanS.Models;
 using Microsoft.EntityFrameworkCore;
+using static System.Collections.Specialized.BitVector32;
 
 namespace KanS.Services;
 
@@ -26,7 +27,7 @@ public class JobService : IJobService {
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
 
         if(ub == null) {
-            throw new NotFoundException("Cannot add section to non-existing board.");
+            throw new NotFoundException("Cannot add task to non-existing board.");
         }
 
         var section = await _context.Sections
@@ -58,7 +59,7 @@ public class JobService : IJobService {
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
 
         if(ub == null) {
-            throw new NotFoundException("Cannot get a section - Board not found.");
+            throw new NotFoundException("Cannot get a task - Board not found.");
         }
 
         var job = await _context.Jobs
@@ -80,7 +81,7 @@ public class JobService : IJobService {
                     .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
         
         if(ub == null) {
-            throw new NotFoundException("Cannot remove a section - Board not found.");
+            throw new NotFoundException("Cannot remove a task - Board not found.");
         }
 
         var job = await _context.Jobs
@@ -95,7 +96,44 @@ public class JobService : IJobService {
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateJob(int boardId, int sectionId, int jobId, JobUpdateDto jobDto) {
-        throw new NotImplementedException();
+    public async Task UpdateJob(int boardId, int jobId, JobUpdateDto jobDto) {
+        var userId = (int) _userContextService.GetUserId;
+
+        var ub = await _context.UserBoards
+                    .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+
+        if(ub == null) {
+            throw new NotFoundException("Cannot update a task - Board not found.");
+        }
+
+        var job = await _context.Jobs
+                    .FirstOrDefaultAsync(j => j.Id == jobId && !j.Deleted && j.BoardId == boardId);
+
+        if(job == null) {
+            throw new NotFoundException("There is no task like this to update");
+        }
+
+        if(jobDto.SectionId != null) {
+            var newSection = await _context.Sections
+                                .FirstOrDefaultAsync(s => s.Id == jobDto.SectionId);
+
+            if( newSection != null && newSection.BoardId == boardId ) {
+                job.SectionId = (int) jobDto.SectionId;
+            }
+            else {
+                throw new NotFoundException("Cannot find newly specified section for task.");
+            }
+        }
+        if(jobDto.Name != null) {
+            job.Name = jobDto.Name;
+        }
+        if(jobDto.AssignedTo != null) {
+            job.AssignedTo = jobDto.AssignedTo;
+        }
+        if(jobDto.Position != null) {
+            job.Position = (int) jobDto.Position;
+        }
+
+        await _context.SaveChangesAsync();
     }
 }

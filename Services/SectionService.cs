@@ -110,7 +110,7 @@ public class SectionService : ISectionService {
         }
 
         if(sectionDto.Name != null) {
-            section.Name = sectionDto.Name == "" ? "Untitled" : sectionDto.Name;
+            section.Name = sectionDto.Name;
         }
 
         await _context.SaveChangesAsync();

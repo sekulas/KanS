@@ -23,7 +23,7 @@ public class JobController : ControllerBase {
 
         var jobDto = await _jobService.GetJobById(boardId, jobId);
 
-        return CreatedAtAction(nameof(CreateJob), new { id = jobDto.Id }, jobDto);
+        return CreatedAtAction(nameof(CreateJob), new { id = jobId }, jobDto);
     }
 
     [HttpGet("{jobId}")]
@@ -41,4 +41,12 @@ public class JobController : ControllerBase {
 
         return NoContent();
     }
+
+    [HttpPut("{jobId}")]
+    public async Task<ActionResult> UpdateJob([FromRoute] int boardId, [FromRoute] int jobId, JobUpdateDto jobDto) {
+
+        await _jobService.UpdateJob(boardId, jobId, jobDto);
+
+        return Ok();
+    } 
 }
