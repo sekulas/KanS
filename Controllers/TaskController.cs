@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace KanS.Controllers;
 
 
-[Route("api/board/{boardId}/section/{sectionId}/task")]
+[Route("api/board/{boardId}/task")]
 [ApiController]
 [Authorize]
 public class TaskController : ControllerBase {
@@ -17,9 +17,9 @@ public class TaskController : ControllerBase {
     }
 
     [HttpPost]
-    public async Task<ActionResult<TaskDto>> CreateTask([FromRoute] int boardId, [FromRoute] int sectionId) {
+    public async Task<ActionResult<TaskDto>> CreateTask([FromRoute] int boardId, TaskUpdateDto taskSection) {
 
-        var taskId = await _taskService.CreateTask(boardId, sectionId);
+        var taskId = await _taskService.CreateTask(boardId, (int) taskSection.SectionId);
 
         var taskDto = await _taskService.GetTaskById(boardId, taskId);
 
