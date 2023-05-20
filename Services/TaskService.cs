@@ -33,7 +33,7 @@ public class TaskService : ITaskService {
             .Include(s => s.Tasks)
             .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted && s.BoardId == boardId);
 
-        int position = section.Tasks.Count() + 1;
+        int position = section.Tasks.Count();
 
         int nextId = await _context.Tasks.CountAsync() + 1;
 

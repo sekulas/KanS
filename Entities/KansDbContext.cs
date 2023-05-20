@@ -68,7 +68,7 @@ public class KansDbContext : DbContext {
             .Property(s => s.Deleted)
             .HasDefaultValue(false);
 
-        // Configure Job entity
+        // Configure Task entity
         modelBuilder.Entity<TaskE>()
             .Property(j => j.Name)
             .HasDefaultValue("");

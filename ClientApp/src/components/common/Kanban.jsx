@@ -15,8 +15,59 @@ const Kanban = (props) => {
         setSections(props.sections)
     }, [props.sections])
 
-    const onDragEnd = () => {
-        
+    const onDragEnd = async ({source, destination}) => {
+        if(destination == null){
+            return
+        }
+        const sourceColIndex = sections.findIndex(e => e.id == source.droppableId)
+        const destinationColIndex = sections.findIndex(e => e.id == destination.droppableId)
+        const sourceCol = sections[sourceColIndex]
+        const destinationCol = sections[destinationColIndex]
+
+        const taskId = sourceCol.tasks[source.index].id;
+
+        const destinationSectionId = destinationCol.id
+
+        const sourceTasks = [...sourceCol.tasks]
+        const destinationTasks = [...destinationCol.tasks]
+
+        if(source.droppableId !== destination.draggableId) {
+            const [removed] = sourceTasks.splice(source.index, 1)
+            destinationTasks.splice(destination.index, 0, removed)
+            sections[sourceColIndex].tasks = sourceTasks
+            sections[destinationColIndex].tasks = destinationTasks
+        }
+        else {
+            const [removed] = destinationTasks.splice(source.index, 1)
+            destinationTasks.splice(destination.index, 0, removed)
+            sections[sourceColIndex].tasks = sourceTasks
+            sections[destinationColIndex].tasks = destinationTasks
+        }
+
+        try {
+            await taskApi.update(boardId, taskId, {
+                sectionId: destinationSectionId,
+                position: destination.index
+            })
+            setSections(sections)
+        }
+        catch (err) {
+            if(err.data === undefined) {
+                alert(err)
+            } else {
+                const errors = err.data.errors
+
+                let errorMessage = ''
+                
+                for (const key in errors) {
+                    const errorArray = errors[key]
+                    errorMessage += errorArray
+                    errorMessage += '\n---\n'
+                }
+                
+                alert(errorMessage)
+            }
+        }
     }
 
     const createSection = async () => {
@@ -25,7 +76,11 @@ const Kanban = (props) => {
             setSections([...sections, section])
         }
         catch (err) {
-            alert(err.data.errors)
+            if(err.data === undefined) {
+                alert(err)
+            } else {
+                alert(err.data.errors)
+            }
         }
     }
 
@@ -36,7 +91,11 @@ const Kanban = (props) => {
             setSections(newSections)
         }
         catch (err) {
-            alert(err.data.errors)
+            if(err.data === undefined) {
+                alert(err)
+            } else {
+                alert(err.data.errors)
+            }
         }
     }
 
@@ -66,8 +125,11 @@ const Kanban = (props) => {
             setSections(newSections)
         }
         catch (err) {
-            console.log(err)
-            alert(err.data.errors)
+            if(err.data === undefined) {
+                alert(err)
+            } else {
+                alert(err.data.errors)
+            }
         }
     }
 
@@ -108,6 +170,7 @@ const Kanban = (props) => {
                                                     marginRight: '10px'
                                                 }}
                                             >
+                                                {provided.placeholder}
                                                 <Box sx={{
                                                     display: 'flex',
                                                     alignItems: 'center',
@@ -163,7 +226,6 @@ const Kanban = (props) => {
                                                             marginBottom: '10px',
                                                             cursor: snapshot.isDragging ? 'grab' : 'pointer!important'
                                                         }}
-                                                        onClick={() => setSelectedTask(task)}
                                                         >
                                                         <Typography>
                                                             {task.name === '' ? `New Task #${task.id}` : task.name}
