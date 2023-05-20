@@ -16,6 +16,8 @@ const Kanban = (props) => {
     }, [props.sections])
 
     const onDragEnd = async ({source, destination}) => {
+        console.log(source)
+        console.log(destination)
         if(destination == null){
             return
         }
@@ -31,16 +33,16 @@ const Kanban = (props) => {
         const sourceTasks = [...sourceCol.tasks]
         const destinationTasks = [...destinationCol.tasks]
 
-        if(source.droppableId !== destination.draggableId) {
-            const [removed] = sourceTasks.splice(source.index, 1)
-            destinationTasks.splice(destination.index, 0, removed)
+            // changing section of task
+        if(source.droppableId !== destination.droppableId) {
+            const [removed] = sourceTasks.splice(source.index, 1) // removing element from source column
+            destinationTasks.splice(destination.index, 0, removed) // inserting element to dest column
             sections[sourceColIndex].tasks = sourceTasks
             sections[destinationColIndex].tasks = destinationTasks
         }
-        else {
-            const [removed] = destinationTasks.splice(source.index, 1)
-            destinationTasks.splice(destination.index, 0, removed)
-            sections[sourceColIndex].tasks = sourceTasks
+        else { // changing position of task in same column
+            const [removed] = destinationTasks.splice(source.index, 1) 
+            destinationTasks.splice(destination.index, 0, removed)  
             sections[destinationColIndex].tasks = destinationTasks
         }
 
