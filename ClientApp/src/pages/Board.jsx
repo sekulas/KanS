@@ -79,6 +79,12 @@ const Board = () => {
     const changeBoardName = async (e) => {
         const newName = e.target.value
         setName(newName)
+        /* Live Board Name Change on Sidebar TODO
+        let newBoards = [...boards];
+        const index = newBoards.findIndex((e) => e.id === boardId);
+        newBoards[index] = { ...newBoards[index], name: newName };
+        dispatch(setBoards(newBoards)); // Update the boards array in Redux
+        */
     }
 
     const updateBoardName = async (e) => {

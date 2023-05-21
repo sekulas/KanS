@@ -16,8 +16,6 @@ const Kanban = (props) => {
     }, [props.sections])
 
     const onDragEnd = async ({source, destination}) => {
-        console.log(source)
-        console.log(destination)
         if(destination == null){
             return
         }
@@ -135,6 +133,23 @@ const Kanban = (props) => {
         }
     }
 
+    const removeTask = async (sectionId, taskId) => {
+        try {
+            await taskApi.remove(boardId, taskId)
+            const newSections = [...sections]
+            const index = newSections.findIndex(e => e.id === sectionId)
+            newSections[index].tasks = newSections[index].tasks.filter(e => e.id != taskId)
+            setSections(newSections)
+        }
+        catch (err) {
+            if(err.data === undefined) {
+                alert(err)
+            } else {
+                alert(err.data.errors)
+            }
+        }
+    }
+
     return (
         <>
             <Box sx={{
@@ -226,12 +241,25 @@ const Kanban = (props) => {
                                                         sx={{
                                                             padding: '10px',
                                                             marginBottom: '10px',
-                                                            cursor: snapshot.isDragging ? 'grab' : 'pointer!important'
+                                                            cursor: snapshot.isDragging ? 'grab' : 'pointer!important',
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between'
                                                         }}
                                                         >
-                                                        <Typography>
-                                                            {task.name === '' ? `New Task #${task.id}` : task.name}
-                                                        </Typography>
+                                                            <Typography>
+                                                                {task.name === '' ? `New Task #${task.id}` : task.name}
+                                                            </Typography>
+                                                            <IconButton
+                                                            variant='outlined'
+                                                            size='small'
+                                                            sx={{
+                                                                color: 'gray',
+                                                                '&:hover': {color: assets.colors.error}
+                                                            }}
+                                                            onClick={() => removeTask(section.id, task.id)}
+                                                            >
+                                                                <DeleteOutlinedIcon/>
+                                                            </IconButton>
                                                         </Card>
                                                     )}
                                                     </Draggable>
