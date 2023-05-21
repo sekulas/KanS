@@ -12,7 +12,22 @@ import Login from './pages/Login'
 function App() {
 
     const theme = createTheme({
-        palette: {mode: 'dark'}
+        palette: {
+            mode: 'dark'
+        },  
+        card: {
+            main: "rgb(16, 89, 96)"
+        },
+        list: {
+            main: "rgb(0, 64, 128)",
+            selected: "rgb(0, 93, 183)"
+        },
+        success: {
+            main: "#66bb6a"
+        },
+        error: {
+            main: "#f44336"
+        }
     })
 
     return (

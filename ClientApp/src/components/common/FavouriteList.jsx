@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setFavouriteList } from "../../redux/features/favouriteSlice";
 import { Link, useParams } from "react-router-dom";
 import boardApi from "../../api/boardApi"
+import { useTheme } from "@emotion/react";
 
 const FavouriteList = () => {
+  const theme = useTheme()
   const dispatch = useDispatch();
   const list = useSelector((state) => state.favourites.value);
   const { boardId } = useParams();
@@ -48,6 +50,9 @@ const FavouriteList = () => {
           sx={{
             pl: "20px",
             cursor: "pointer!important",
+            '&.Mui-selected': {
+              backgroundColor: theme.list.selected, // Set your desired selected color
+          },
           }}
         >
           <Typography

@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import assets from '../../assets/index'
 import sectionApi from '../../api/sectionApi'
 import taskApi from '../../api/taskApi'
+import { useTheme } from '@mui/material/styles';
 
 const Kanban = (props) => {
+    const theme = useTheme();
     const boardId = props.boardId
     const [sections, setSections] = useState([])
 
@@ -231,7 +232,7 @@ const Kanban = (props) => {
                                                         onClick={() => createTask(section.id)}
                                                         sx={{
                                                             color: 'gray',
-                                                            '&:hover': {color: assets.colors.success}
+                                                            '&:hover': {color: theme.success.main}
                                                         }}
                                                     >
                                                         <AddOutlinedIcon/>
@@ -241,7 +242,7 @@ const Kanban = (props) => {
                                                         size='small'
                                                         sx={{
                                                             color: 'gray',
-                                                            '&:hover': {color: assets.colors.error}
+                                                            '&:hover': {color: theme.error.main}
                                                         }}
                                                         onClick={() => removeSection(section.id)}
                                                     >
@@ -253,16 +254,17 @@ const Kanban = (props) => {
                                                     <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
                                                     {(provided, snapshot) => (
                                                         <Card
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        sx={{
-                                                            padding: '10px',
-                                                            marginBottom: '10px',
-                                                            cursor: snapshot.isDragging ? 'grab' : 'pointer!important',
-                                                            display: 'flex',
-                                                            justifyContent: 'space-between'
-                                                        }}
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            sx={{
+                                                                backgroundColor: theme.card.main,
+                                                                padding: '10px',
+                                                                marginBottom: '10px',
+                                                                cursor: snapshot.isDragging ? 'grab' : 'pointer!important',
+                                                                display: 'flex',
+                                                                justifyContent: 'space-between'
+                                                            }}
                                                         >
                                                             <TextField
                                                                 value={task.name}
@@ -271,20 +273,20 @@ const Kanban = (props) => {
                                                                 placeholder= {`New Task #${index}`}
                                                                 variant='outlined'
                                                                 sx={{
-                                                                flexGrow: 1,
-                                                                '& .MuiOutlinedInput-input': {padding: 0},
-                                                                '& .MuiOutlinedInput-notchedOutline': {border: 'unset'},
-                                                                '& .MuiOutlinedInput-root': {fontSize: '1rem', fontWeight: '700'},
+                                                                    flexGrow: 1,
+                                                                    '& .MuiOutlinedInput-input': {padding: 0},
+                                                                    '& .MuiOutlinedInput-notchedOutline': {border: 'unset'},
+                                                                    '& .MuiOutlinedInput-root': {fontSize: '1rem', fontWeight: '700'},
                                                                 }}
                                                             />
                                                             <IconButton
-                                                            variant='outlined'
-                                                            size='small'
-                                                            sx={{
-                                                                color: 'gray',
-                                                                '&:hover': {color: assets.colors.error}
-                                                            }}
-                                                            onClick={() => removeTask(section.id, task.id)}
+                                                                variant='outlined'
+                                                                size='small'
+                                                                sx={{
+                                                                    color: 'gray',
+                                                                    '&:hover': {color: theme.error.main}
+                                                                }}
+                                                                onClick={() => removeTask(section.id, task.id)}
                                                             >
                                                                 <DeleteOutlinedIcon/>
                                                             </IconButton>

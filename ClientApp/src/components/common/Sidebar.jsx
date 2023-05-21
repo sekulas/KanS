@@ -4,13 +4,14 @@ import { useNavigate, useParams, Link } from 'react-router-dom'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import ListItemButton from '@mui/material/ListItemButton';
-import assets from '../../assets/index'
 import boardApi from "../../api/boardApi"
 import { setBoards } from "../../redux/features/boardSlice"
 import { useEffect, useState } from "react"
 import FavouriteList from "./FavouriteList"
+import { useTheme } from "@emotion/react"
 
 const Sidebar = () => {
+    const theme = useTheme()
     const user = useSelector( (state) => state.user.value )
     const boards = useSelector( (state) => state.board.value )
     const navigate = useNavigate()
@@ -64,9 +65,9 @@ const Sidebar = () => {
             <List
              disablePadding
              sx={{
+                backgroundColor: theme.list.main,
                 width: sidebarWidth,
                 height: '100vh',
-                backgroundColor: assets.colors.secondary
              }}
             >
                 <ListItem>
@@ -114,7 +115,10 @@ const Sidebar = () => {
                         to={`/boards/${item.id}`}
                         sx={{
                             pl: '20px',
-                            cursor: 'pointer!important'
+                            cursor: 'pointer!important',
+                            '&.Mui-selected': {
+                                backgroundColor: theme.list.selected, // Set your desired selected color
+                            },
                         }}
                     >
                         <Typography
