@@ -150,6 +150,24 @@ const Kanban = (props) => {
         }
     }
 
+    const changeTaskName = async (e, sectionId, taskId) => {
+        const newName = e.target.value
+        const newSections = [...sections]
+        const sectionIndex = newSections.findIndex(e => e.id == sectionId)
+        const taskIndex = newSections[sectionIndex].tasks.findIndex(e => e.id == taskId)    
+        newSections[sectionIndex].tasks[taskIndex].name = newName    
+        setSections(newSections)
+    }
+
+    const updateTaskName = async (e, taskId) => {
+        try {
+            await taskApi.update(boardId, taskId, {name: e.target.value})
+        }
+        catch (err) {
+            alert(err.data.errors)
+        }
+    }
+
     return (
         <>
             <Box sx={{
@@ -246,9 +264,19 @@ const Kanban = (props) => {
                                                             justifyContent: 'space-between'
                                                         }}
                                                         >
-                                                            <Typography>
-                                                                {task.name === '' ? `New Task #${task.id}` : task.name}
-                                                            </Typography>
+                                                            <TextField
+                                                                value={task.name}
+                                                                onChange={(e) => changeTaskName(e, section.id, task.id)}
+                                                                onBlur={(e) => updateTaskName(e, task.id)}
+                                                                placeholder= {`New Task #${index}`}
+                                                                variant='outlined'
+                                                                sx={{
+                                                                flexGrow: 1,
+                                                                '& .MuiOutlinedInput-input': {padding: 0},
+                                                                '& .MuiOutlinedInput-notchedOutline': {border: 'unset'},
+                                                                '& .MuiOutlinedInput-root': {fontSize: '1rem', fontWeight: '700'},
+                                                                }}
+                                                            />
                                                             <IconButton
                                                             variant='outlined'
                                                             size='small'
