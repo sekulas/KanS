@@ -8,5 +8,5 @@ public class UserBoard {
     public virtual Board Board { get; set; } 
     public DateTime AssignmentDate { get; set; }
     public bool Deleted { get; set; }
-    public String ParticipatingAccepted { get; set; }
+    public string ParticipatingAccepted { get; set; }
 }

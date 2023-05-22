@@ -3,7 +3,6 @@ using KanS.Interfaces;
 using KanS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace KanS.Controllers;
 
@@ -43,9 +42,9 @@ public class BoardController : ControllerBase {
         return NoContent();
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<BoardWithSectionsDto>> GetBoardById([FromRoute] int id) {
-        var board = await _boardService.GetBoardById(id);
+    [HttpGet("{boardId}")]
+    public async Task<ActionResult<BoardWithSectionsDto>> GetBoardById([FromRoute] int boardId) {
+        var board = await _boardService.GetBoardById(boardId);
 
         return Ok(board);
     }
@@ -64,7 +63,7 @@ public class BoardController : ControllerBase {
         return Ok(boards);
     }
 
-    [HttpPost("request/{boardId}")]
+    [HttpPost("{boardId}/request")]
     public async Task<ActionResult> RequestForParticipationToBoard([FromRoute] int boardId, [FromBody] UserParticipationRequestDto userDto) {
 
         await _boardService.RequestForParticipationToBoard(boardId, userDto);
@@ -72,7 +71,7 @@ public class BoardController : ControllerBase {
         return Ok();
     }
 
-    [HttpDelete("request/{boardId}")]
+    [HttpPut("{boardId}/request")]
     public async Task<ActionResult> RespondToParticipationRequest([FromRoute] int boardId, [FromBody] ParticipationRequestResponseDto resDto) {
 
         bool isAccessGranted = await _boardService.RespondToParticipationRequest(boardId, resDto);

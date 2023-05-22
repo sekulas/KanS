@@ -6,8 +6,9 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import ListItemButton from '@mui/material/ListItemButton';
 import boardApi from "../../api/boardApi"
 import { setBoards } from "../../redux/features/boardSlice"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import FavouriteList from "./FavouriteList"
+import RequestedList from "./RequestList"
 import { useTheme } from "@emotion/react"
 
 const Sidebar = () => {
@@ -85,6 +86,10 @@ const Sidebar = () => {
                         </IconButton>
                     </Box>
                 </ListItem>
+                <Box sx={{
+                    paddingTop: '10px'
+                }}/>
+                <RequestedList/>
                 <Box sx={{
                     paddingTop: '10px'
                 }}/>

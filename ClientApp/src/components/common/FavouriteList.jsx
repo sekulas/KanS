@@ -52,7 +52,7 @@ const FavouriteList = () => {
             cursor: "pointer!important",
             '&.Mui-selected': {
               backgroundColor: theme.list.selected, // Set your desired selected color
-          },
+            },
           }}
         >
           <Typography
