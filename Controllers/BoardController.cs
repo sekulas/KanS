@@ -63,4 +63,31 @@ public class BoardController : ControllerBase {
 
         return Ok(boards);
     }
+
+    [HttpPost("request/{boardId}")]
+    public async Task<ActionResult> RequestForParticipationToBoard([FromRoute] int boardId, [FromBody] UserParticipationRequestDto userDto) {
+
+        await _boardService.RequestForParticipationToBoard(boardId, userDto);
+
+        return Ok();
+    }
+
+    [HttpDelete("request/{boardId}")]
+    public async Task<ActionResult> RespondToParticipationRequest([FromRoute] int boardId, [FromBody] ParticipationRequestResponseDto resDto) {
+
+        bool isAccessGranted = await _boardService.RespondToParticipationRequest(boardId, resDto);
+
+        if (isAccessGranted) {
+            return Ok();
+        }
+
+        return NoContent();
+    }
+
+    [HttpGet("request")]
+    public async Task<ActionResult<List<BoardDto>>> GetAllRequestedParticipationBoardsForUser() {
+        var boards = await _boardService.GetAllRequestedParticipationBoardsForUser();
+
+        return Ok(boards);
+    }
 }

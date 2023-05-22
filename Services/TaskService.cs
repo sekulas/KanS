@@ -23,7 +23,7 @@ public class TaskService : ITaskService {
 
         var ub = await _context.UserBoards
             .Include(ub => ub.Board)
-            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
 
         if(ub == null) {
             throw new NotFoundException("Cannot add task to non-existing board.");
@@ -55,7 +55,7 @@ public class TaskService : ITaskService {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards.AsNoTracking()
-            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
 
         if(ub == null) {
             throw new NotFoundException("Cannot get a task - Board not found.");
@@ -77,7 +77,7 @@ public class TaskService : ITaskService {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
-                    .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+                    .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
         
         if(ub == null) {
             throw new NotFoundException("Cannot remove a task - Board not found.");
@@ -99,7 +99,7 @@ public class TaskService : ITaskService {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
-                    .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+                    .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
 
         if(ub == null) {
             throw new NotFoundException("Cannot update a task - Board not found.");

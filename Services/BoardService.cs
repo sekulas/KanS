@@ -3,6 +3,7 @@ using KanS.Entities;
 using KanS.Exceptions;
 using KanS.Interfaces;
 using KanS.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanS.Services;
@@ -37,7 +38,8 @@ public class BoardService : IBoardService {
         UserBoard ub = new UserBoard() {
             UserId = userId,
             BoardId = nextId,
-            AssignmentDate = DateTime.UtcNow
+            AssignmentDate = DateTime.UtcNow,
+            ParticipatingAccepted = "true"
         };
 
         await _context.UserBoards.AddAsync(ub);
@@ -54,7 +56,7 @@ public class BoardService : IBoardService {
             .Include(ub => ub.Board)
                 .ThenInclude(b => b.Sections.Where(s => !s.Deleted))
                     .ThenInclude(s => s.Tasks.Where(t => !t.Deleted))
-            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
 
         if(ub == null) {
             throw new NotFoundException("Board not found.");
@@ -104,7 +106,7 @@ public class BoardService : IBoardService {
         var userId = (int) _userContextService.GetUserId;
 
         var boards = await _context.UserBoards.AsNoTracking()
-            .Where(ub => ub.UserId == userId && !ub.Deleted)
+            .Where(ub => ub.UserId == userId && !ub.Deleted && ub.ParticipatingAccepted == "true")
             .Select(ub => _mapper.Map<Board,BoardDto>(ub.Board))
             .ToListAsync();
 
@@ -115,11 +117,83 @@ public class BoardService : IBoardService {
         var userId = (int) _userContextService.GetUserId;
 
         var boards = await _context.UserBoards.AsNoTracking()
-            .Where(ub => ub.UserId == userId && ub.Board.Favourite && !ub.Deleted)
+            .Where(ub => ub.UserId == userId && ub.Board.Favourite && !ub.Deleted && ub.ParticipatingAccepted == "true")
             .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();
 
         return boards;
+    }
+
+    public async Task<List<BoardDto>> GetAllRequestedParticipationBoardsForUser() {
+        var userId = (int) _userContextService.GetUserId;
+
+        var boards = await _context.UserBoards.AsNoTracking()
+            .Where(ub => ub.UserId == userId && !ub.Deleted && ub.ParticipatingAccepted == "pending")
+            .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
+            .ToListAsync();
+
+        return boards;
+    }
+
+    public async Task RequestForParticipationToBoard(int boardId, UserParticipationRequestDto userDto) {
+        var userId = (int) _userContextService.GetUserId;
+
+        var ub = await _context.UserBoards.AsNoTracking()
+            .Include(ub => ub.Board)
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
+
+        if(ub == null) {
+            throw new NotFoundException("Board not found.");
+        }
+        else if(ub.Board.OwnerId != userId) {
+            throw new UnauthorizedAccessException("Only the owner of board can request others to participate.");
+        }
+
+        var requestedUser = await _context.Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == userDto.Email);
+
+        if(requestedUser == null) {
+            throw new NotFoundException("There is no user with this email to share with.");
+        }
+
+        UserBoard newUb = new UserBoard() {
+            UserId = requestedUser.Id,
+            BoardId = boardId,
+            AssignmentDate = DateTime.UtcNow,
+            ParticipatingAccepted = "pending"
+        };
+
+        await _context.UserBoards.AddAsync(newUb);
+
+        await _context.SaveChangesAsync();
+
+    }
+    public async Task<bool> RespondToParticipationRequest(int boardId, ParticipationRequestResponseDto resDto) {
+        var userId = (int) _userContextService.GetUserId;
+
+        var ub = await _context.UserBoards
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "pending");
+
+        if(ub == null) {
+            throw new NotFoundException("Request not found.");
+        }
+
+        bool res = true;
+
+        if(resDto.ParticipatingAccepted == "true") {
+            ub.ParticipatingAccepted = "true";
+        }
+        else if(resDto.ParticipatingAccepted == "false") {
+            ub.ParticipatingAccepted = "false";
+            res = false;
+        }
+        else {
+            throw new BadRequestException("Something was wrong with the request response meessage.");
+        }
+
+        await _context.SaveChangesAsync();
+
+        return res;
     }
 
     public async Task RemoveBoard(int boardId) {
@@ -141,13 +215,13 @@ public class BoardService : IBoardService {
         }
         else {
             var ub = await _context.UserBoards
-                .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId);
+                .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && ub.ParticipatingAccepted == "true");
 
             if(ub == null) {
                 throw new NotFoundException("There is no connection between the user and the board.");
             }
 
-            ub.Deleted = true;
+            ub.ParticipatingAccepted = "false";
         }
 
 

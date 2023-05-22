@@ -19,6 +19,11 @@ public class ErrorHandlingMiddleware : IMiddleware {
             var result = JsonSerializer.Serialize(new { errors = notFoundException.Message });
             await context.Response.WriteAsync(result);
         }
+        catch (UnauthorizedAccessException unauthorizedAccessException) {
+            context.Response.StatusCode = 401;
+            var result = JsonSerializer.Serialize(new { errors = unauthorizedAccessException.Message });
+            await context.Response.WriteAsync(result);
+        }
         catch (Exception e) {
             context.Response.StatusCode = 500;
             var result = JsonSerializer.Serialize(new { errors = "Something went wrong - " + e.Message });
