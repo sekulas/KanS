@@ -67,9 +67,6 @@ const Register = () => {
         catch (err) {
             const errors = err.data.errors
 
-            if (errors.Name) {
-                setNameErrText(errors.Name[0]);
-            }
             if (errors.Email) {
                 setEmailErrText(errors.Email[0]);
             }

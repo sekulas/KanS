@@ -10,6 +10,7 @@ using KanS;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using KanS.Middleware;
+using KanS.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,8 @@ builder.Services.AddCors(options => {
 
 builder.Services.AddControllers();
 
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 
@@ -58,8 +61,13 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IBoardService, BoardService>();
+builder.Services.AddScoped<ISectionService, SectionService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -68,6 +76,11 @@ var app = builder.Build();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseAuthentication();
+
+if(app.Environment.IsDevelopment()) {
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 

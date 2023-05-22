@@ -31,10 +31,11 @@ const AuthLayout = () => {
       ) : (
         <Container component='main' maxWidth='xs'>
           <Box sx={{
-            marginTop: 8,
             display: 'flex',
             alignItems: 'center',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            justifyContent: 'center',
+            height: '100vh',
           }}>
             <img src={assets.images.logoDark} style={{width: '100px'}} alt='KanS logo'/>
             <Outlet/>
