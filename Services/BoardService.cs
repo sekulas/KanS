@@ -50,7 +50,7 @@ public class BoardService : IBoardService {
     public async Task<BoardWithSectionsDto> GetBoardById(int boardId) {
         var userId = (int) _userContextService.GetUserId;
 
-        var ub = await _context.UserBoards
+        var ub = await _context.UserBoards.AsNoTracking()
             .Include(ub => ub.Board)
                 .ThenInclude(b => b.Sections.Where(s => !s.Deleted))
                     .ThenInclude(s => s.Tasks.Where(t => !t.Deleted))
@@ -103,7 +103,7 @@ public class BoardService : IBoardService {
     public async Task<List<BoardDto>> GetAllBoardsForUser() {
         var userId = (int) _userContextService.GetUserId;
 
-        var boards = await _context.UserBoards
+        var boards = await _context.UserBoards.AsNoTracking()
             .Where(ub => ub.UserId == userId && !ub.Deleted)
             .Select(ub => _mapper.Map<Board,BoardDto>(ub.Board))
             .ToListAsync();
@@ -114,7 +114,7 @@ public class BoardService : IBoardService {
     public async Task<List<BoardDto>> GetAllFavouriteBoardsForUser() {
         var userId = (int) _userContextService.GetUserId;
 
-        var boards = await _context.UserBoards
+        var boards = await _context.UserBoards.AsNoTracking()
             .Where(ub => ub.UserId == userId && ub.Board.Favourite && !ub.Deleted)
             .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();

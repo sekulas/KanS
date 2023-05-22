@@ -54,14 +54,14 @@ public class TaskService : ITaskService {
     public async Task<TaskDto> GetTaskById(int boardId, int taskId) {
         var userId = (int) _userContextService.GetUserId;
 
-        var ub = await _context.UserBoards
+        var ub = await _context.UserBoards.AsNoTracking()
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
 
         if(ub == null) {
             throw new NotFoundException("Cannot get a task - Board not found.");
         }
 
-        var task = await _context.Tasks
+        var task = await _context.Tasks.AsNoTracking()
             .FirstOrDefaultAsync(j => j.Id == taskId && !j.Deleted && j.BoardId == boardId);
 
         if(task == null) {

@@ -46,14 +46,14 @@ public class SectionService : ISectionService {
     public async Task<SectionDto> GetSectionById(int boardId, int sectionId) {
         var userId = (int) _userContextService.GetUserId;
 
-        var ub = await _context.UserBoards
+        var ub = await _context.UserBoards.AsNoTracking()
             .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
 
         if(ub == null) {
             throw new NotFoundException("Cannot get a section - Board not found.");
         }
 
-        var section = await _context.Sections
+        var section = await _context.Sections.AsNoTracking()
             .Include(s => s.Tasks.Where(t => !t.Deleted))
             .FirstOrDefaultAsync(s => s.Id == sectionId && !s.Deleted && s.BoardId == boardId);
 
