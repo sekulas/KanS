@@ -27,6 +27,9 @@ function App() {
         },
         error: {
             main: "#f44336"
+        },
+        button: {
+            share: "#FF00FF"
         }
     })
 

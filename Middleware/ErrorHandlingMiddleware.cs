@@ -1,4 +1,5 @@
 ﻿using KanS.Exceptions;
+using System;
 using System.Text.Json;
 
 namespace KanS.Middleware;
@@ -11,22 +12,27 @@ public class ErrorHandlingMiddleware : IMiddleware {
         }
         catch (BadRequestException badRequestException) {
             context.Response.StatusCode = 400;
-            var result = JsonSerializer.Serialize(new { errors = badRequestException.Message });
+            var errorList = new List<string> { badRequestException.Message };
+            var result = JsonSerializer.Serialize(new { errors = errorList });
             await context.Response.WriteAsync(result);
         }
         catch (NotFoundException notFoundException) {
             context.Response.StatusCode = 404;
-            var result = JsonSerializer.Serialize(new { errors = notFoundException.Message });
+            var errorList = new List<string> { notFoundException.Message };
+            var result = JsonSerializer.Serialize(new { errors = errorList });
             await context.Response.WriteAsync(result);
         }
         catch (UnauthorizedAccessException unauthorizedAccessException) {
             context.Response.StatusCode = 401;
-            var result = JsonSerializer.Serialize(new { errors = unauthorizedAccessException.Message });
+            var errorList = new List<string> { unauthorizedAccessException.Message };
+            var result = JsonSerializer.Serialize(new { errors = errorList });
             await context.Response.WriteAsync(result);
         }
         catch (Exception e) {
             context.Response.StatusCode = 500;
-            var result = JsonSerializer.Serialize(new { errors = "Something went wrong - " + e.Message });
+            string error = "Internal Server Error: " + e.Message;
+            var errorList = new List<string> { error };
+            var result = JsonSerializer.Serialize(new { errors = errorList });
             await context.Response.WriteAsync(result);
         }
 

@@ -3,17 +3,22 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { setFavouriteList } from "../redux/features/favouriteSlice";
 import { setBoards } from "../redux/features/boardSlice";
-import { Box, IconButton, TextField, Typography, Button, Divider } from '@mui/material'
+import { Box, IconButton, TextField, Modal, Button} from '@mui/material'
 import StarOutlinedIcon from '@mui/icons-material/StarOutlined'
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
+import ShareIcon from '@mui/icons-material/Share';
 import boardApi from '../api/boardApi'
 import Kanban from '../components/common/Kanban'
+import { useTheme } from '@emotion/react';
 
 const Board = () => {
+    const theme = useTheme()
     const { boardId } = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [shareModalOpen, setShareModalOpen] = useState(false)
+    const [emailErrText, setEmailErrText] = useState('')
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [sections, setSections] = useState([])
@@ -110,6 +115,67 @@ const Board = () => {
         }
     }
 
+    const handleOpen = () => {
+        setShareModalOpen(true);
+    };
+    const handleClose = () => {
+        setShareModalOpen(false);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setEmailErrText('')
+
+        const data = new FormData(e.target)
+        const email = data.get('email').trim()
+
+        let err = false
+        
+        if( email === '' ) {
+            err = true
+            setEmailErrText('Please fill this field')
+        }
+
+        if( err ) {
+            return
+        }
+
+        try {
+            await boardApi.requestForParticipation(boardId, {email: email})
+            handleClose()
+        }
+        catch (err) {
+            if(err.data === undefined) {
+                setEmailErrText(err)
+            } else {
+                const errors = err.data.errors
+
+                let errorMessage = ''
+                
+                for (const key in errors) {
+                    const errorArray = errors[key]
+                    errorMessage += errorArray
+                    errorMessage += '\n'
+                }
+                
+                setEmailErrText(errorMessage)
+            }
+        }
+
+    }
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        bgcolor: 'background.paper',
+        border: `2px solid ${theme.button.share}`,
+        pt: 2,
+        px: 4,
+        pb: 3,
+    };
+
     return (
         <>
             <Box sx={{
@@ -127,9 +193,51 @@ const Board = () => {
                     )
                 }
                 </IconButton>
+                <Box>
+                <IconButton variant='outlined' onClick={handleOpen} sx={{color: theme.button.share}}>
+                    <ShareIcon/>
+                </IconButton>
+                <Modal
+                    open={shareModalOpen}
+                    onClose={handleClose}
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
+                >
+                    <Box 
+                        component='form'
+                        onSubmit={handleSubmit}
+                        noValidate
+                        sx={{ ...style, width: '25%' }}
+                    >
+                        <h2>Sharing</h2>
+                        <p>
+                            Fill empty field with the email of person you want to share board with.
+                        </p>
+                        <TextField
+                            margin='normal'
+                            required
+                            fullWidth
+                            id='email'
+                            label='Email'
+                            name='email'
+                            type='email'
+                            error={emailErrText !== ''}
+                            helperText={emailErrText}
+                        />
+                        <Button
+                            sx={{mt:3, mb:2}}
+                            variant='outlined'
+                            fullWidth
+                            type='submit'
+                        >
+                            Send Request
+                        </Button>
+                    </Box>
+                </Modal>
                 <IconButton variant='outlined' color='error' onClick={removeBoard}>
                     <DeleteOutlinedIcon/>
                 </IconButton>
+                </Box>
             </Box>
             <Box sx={{ padding: '10px 50px' }}>
                 <Box>
