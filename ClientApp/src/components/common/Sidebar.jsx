@@ -71,7 +71,7 @@ const Sidebar = () => {
                 height: '100vh',
              }}
             >
-                <ListItem>
+                <ListItem sx={{backgroundColor: theme.card.light}}>
                     <Box sx={{
                         width: '100%',
                         display: 'flex',
@@ -86,17 +86,8 @@ const Sidebar = () => {
                         </IconButton>
                     </Box>
                 </ListItem>
-                <Box sx={{
-                    paddingTop: '10px'
-                }}/>
                 <RequestedList/>
-                <Box sx={{
-                    paddingTop: '10px'
-                }}/>
                 <FavouriteList/>
-                <Box sx={{
-                    paddingTop: '10px'
-                }}/>
                 <ListItem>
                     <Box sx={{
                         width: '100%',
@@ -122,7 +113,7 @@ const Sidebar = () => {
                             pl: '20px',
                             cursor: 'pointer!important',
                             '&.Mui-selected': {
-                                backgroundColor: theme.list.selected, // Set your desired selected color
+                                backgroundColor: theme.list.selected,
                             },
                         }}
                     >

@@ -6,8 +6,10 @@ import { setRequestedList } from '../../redux/features/requestSlice';
 import { setBoards } from "../../redux/features/boardSlice"
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
+import { useTheme } from '@emotion/react';
 
 const RequestedList = () => {
+  const theme = useTheme()
   const dispatch = useDispatch();
   const requestedList = useSelector((state) => state.requested.value);
   const boardList = useSelector((state) => state.board.value)
@@ -96,29 +98,38 @@ const RequestedList = () => {
 
   return (
     <>
-        <ListItem>
-            <Box
-            sx={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-            }}
-            >
-            <Typography variant="body2" fontWeight="700">
-                Shared
-            </Typography>
-            </Box>
-        </ListItem>
-        {requestedList.map((item) => (
+        {requestedList.length > 0 && (
+            <>
+                <Box sx={{
+                    paddingTop: '5px'
+                }}/>
+                <ListItem sx={{backgroundColor: theme.share.dark}}>
+                    <Box
+                    sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                    }}
+                    >
+                    <Typography variant="body2" fontWeight="700">
+                        Shared
+                    </Typography>
+                    </Box>
+                </ListItem>
+            </>
+        )}
+        {requestedList.length > 0 && requestedList.map((item) => (
             <ListItem
                 key={item.id}
                 sx={{
                     pl: "20px",
                     cursor: "pointer!important",
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    borderLeft: `2px solid ${theme.share.dark}`,
+                    borderRight: `2px solid ${theme.share.dark}`,
+                    borderBottom: `2px solid ${theme.share.dark}`,
                 }}
             >
             <Typography

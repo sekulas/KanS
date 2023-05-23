@@ -27,7 +27,10 @@ const FavouriteList = () => {
 
   return (
     <>
-      <ListItem>
+      <Box sx={{
+        paddingTop: '5px'
+      }}/>
+      <ListItem sx={{backgroundColor: theme.warning.main}}>
         <Box
           sx={{
             width: "100%",
@@ -53,6 +56,9 @@ const FavouriteList = () => {
             '&.Mui-selected': {
               backgroundColor: theme.list.selected, // Set your desired selected color
             },
+            borderLeft: `2px solid ${theme.warning.main}`,
+            borderRight: `2px solid ${theme.warning.main}`,
+            borderBottom: `2px solid ${theme.warning.main}`,
           }}
         >
           <Typography

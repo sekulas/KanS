@@ -37,8 +37,13 @@ const Board = () => {
                 setSections(res.sections)
                 setIsFavourite(res.favourite)
             } catch(err) {
-                alert(err.data.errors + "\n\nNavigating to existing board.")
-                navigate(`/boards/${boards[0].id}`)
+                alert(err.data.errors + "\n\nBoard you was looging found not found.\nNavigating to existing board.")
+                if(boards[0] === undefined) {
+                    navigate(`/`)
+                }
+                else {
+                    navigate(`/boards/${boards[0].id}`)
+                }
             }
         }
 
@@ -170,7 +175,7 @@ const Board = () => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         bgcolor: 'background.paper',
-        border: `2px solid ${theme.button.share}`,
+        border: `2px solid ${theme.share.main}`,
         pt: 2,
         px: 4,
         pb: 3,
@@ -194,7 +199,7 @@ const Board = () => {
                 }
                 </IconButton>
                 <Box>
-                <IconButton variant='outlined' onClick={handleOpen} sx={{color: theme.button.share}}>
+                <IconButton variant='outlined' onClick={handleOpen} sx={{color: theme.share.main}}>
                     <ShareIcon/>
                 </IconButton>
                 <Modal
