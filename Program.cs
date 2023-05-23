@@ -77,6 +77,8 @@ builder.Services.AddDbContext<KansDbContext>(
     o => o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.AddHostedService<DataCoherenceBackgroundService>();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
