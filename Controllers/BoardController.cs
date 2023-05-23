@@ -23,7 +23,7 @@ public class BoardController : ControllerBase {
 
         var board = await _boardService.GetBoardById(boardId);
 
-        return CreatedAtAction(nameof(GetBoardById), new { id = board.Id }, board);
+        return CreatedAtAction(nameof(CreateBoard), new { id = board.Id }, board);
     }
 
     [HttpPut("{sectionId}")]
