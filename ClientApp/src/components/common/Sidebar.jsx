@@ -6,8 +6,9 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import ListItemButton from '@mui/material/ListItemButton';
 import boardApi from "../../api/boardApi"
 import { setBoards } from "../../redux/features/boardSlice"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import FavouriteList from "./FavouriteList"
+import RequestedList from "./RequestList"
 import { useTheme } from "@emotion/react"
 
 const Sidebar = () => {
@@ -70,7 +71,7 @@ const Sidebar = () => {
                 height: '100vh',
              }}
             >
-                <ListItem>
+                <ListItem sx={{backgroundColor: theme.card.light}}>
                     <Box sx={{
                         width: '100%',
                         display: 'flex',
@@ -85,13 +86,8 @@ const Sidebar = () => {
                         </IconButton>
                     </Box>
                 </ListItem>
-                <Box sx={{
-                    paddingTop: '10px'
-                }}/>
+                <RequestedList/>
                 <FavouriteList/>
-                <Box sx={{
-                    paddingTop: '10px'
-                }}/>
                 <ListItem>
                     <Box sx={{
                         width: '100%',
@@ -117,7 +113,7 @@ const Sidebar = () => {
                             pl: '20px',
                             cursor: 'pointer!important',
                             '&.Mui-selected': {
-                                backgroundColor: theme.list.selected, // Set your desired selected color
+                                backgroundColor: theme.list.selected,
                             },
                         }}
                     >

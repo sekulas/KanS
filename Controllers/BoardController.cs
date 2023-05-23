@@ -3,7 +3,6 @@ using KanS.Interfaces;
 using KanS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace KanS.Controllers;
 
@@ -24,7 +23,7 @@ public class BoardController : ControllerBase {
 
         var board = await _boardService.GetBoardById(boardId);
 
-        return CreatedAtAction(nameof(GetBoardById), new { id = board.Id }, board);
+        return CreatedAtAction(nameof(CreateBoard), new { id = board.Id }, board);
     }
 
     [HttpPut("{sectionId}")]
@@ -43,9 +42,9 @@ public class BoardController : ControllerBase {
         return NoContent();
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<BoardWithSectionsDto>> GetBoardById([FromRoute] int id) {
-        var board = await _boardService.GetBoardById(id);
+    [HttpGet("{boardId}")]
+    public async Task<ActionResult<BoardWithSectionsDto>> GetBoardById([FromRoute] int boardId) {
+        var board = await _boardService.GetBoardById(boardId);
 
         return Ok(board);
     }
@@ -60,6 +59,33 @@ public class BoardController : ControllerBase {
     [HttpGet("favourites")]
     public async Task<ActionResult<List<BoardDto>>> GetAllFavouriteBoardsForUser() {
         var boards = await _boardService.GetAllFavouriteBoardsForUser();
+
+        return Ok(boards);
+    }
+
+    [HttpPost("{boardId}/request")]
+    public async Task<ActionResult> RequestForParticipationToBoard([FromRoute] int boardId, [FromBody] UserParticipationRequestDto userDto) {
+
+        await _boardService.RequestForParticipationToBoard(boardId, userDto);
+
+        return Ok();
+    }
+
+    [HttpPut("{boardId}/request")]
+    public async Task<ActionResult> RespondToParticipationRequest([FromRoute] int boardId, [FromBody] ParticipationRequestResponseDto resDto) {
+
+        bool isAccessGranted = await _boardService.RespondToParticipationRequest(boardId, resDto);
+
+        if (isAccessGranted) {
+            return Ok();
+        }
+
+        return NoContent();
+    }
+
+    [HttpGet("request")]
+    public async Task<ActionResult<List<BoardDto>>> GetAllRequestedParticipationBoardsForUser() {
+        var boards = await _boardService.GetAllRequestedParticipationBoardsForUser();
 
         return Ok(boards);
     }

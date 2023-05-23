@@ -22,7 +22,7 @@ public class SectionService : ISectionService {
 
         var ub = await _context.UserBoards
             .Include(ub => ub.Board)
-            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
 
         if(ub == null) {
             throw new NotFoundException("Cannot add section to non-existing board.");
@@ -47,7 +47,7 @@ public class SectionService : ISectionService {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards.AsNoTracking()
-            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
 
         if(ub == null) {
             throw new NotFoundException("Cannot get a section - Board not found.");
@@ -73,7 +73,7 @@ public class SectionService : ISectionService {
         var ub = await _context.UserBoards
             .Include(ub => ub.Board)
                 .ThenInclude(b => b.Sections)
-            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted);
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
 
         if(ub == null) {
             throw new NotFoundException("Cannot remove a section - Board not found.");
@@ -95,7 +95,7 @@ public class SectionService : ISectionService {
         var userId = (int) _userContextService.GetUserId;
 
         var ub = await _context.UserBoards
-            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == sectionDto.BoardId && !ub.Deleted);
+            .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == sectionDto.BoardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
 
         if(ub == null) {
             throw new NotFoundException("Cannot update a section - Board not found.");

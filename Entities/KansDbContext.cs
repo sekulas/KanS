@@ -38,6 +38,10 @@ public class KansDbContext : DbContext {
             .WithMany(b => b.UserBoards)
             .HasForeignKey(ub => ub.BoardId);
 
+        modelBuilder.Entity<UserBoard>()
+            .Property(ub => ub.ParticipatingAccepted)
+            .HasDefaultValue("pending");
+
         //Configure Board entity
         modelBuilder.Entity<Board>()
             .Property(j => j.Name)

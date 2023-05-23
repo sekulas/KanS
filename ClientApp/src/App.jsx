@@ -16,17 +16,26 @@ function App() {
             mode: 'dark'
         },  
         card: {
-            main: "rgb(16, 89, 96)"
+            main: "rgb(16, 89, 96)",
+            light: "rgb(26, 146, 157)"
         },
         list: {
             main: "rgb(0, 64, 128)",
             selected: "rgb(0, 93, 183)"
         },
         success: {
-            main: "#66bb6a"
+            main: "#388e3c"
         },
         error: {
             main: "#f44336"
+        },
+        warning: {
+            main: "#f57c00",
+            light: "#ffb74d"
+        },
+        share: {
+            main: "#FF00FF",
+            dark: "#9D009D"
         }
     })
 
