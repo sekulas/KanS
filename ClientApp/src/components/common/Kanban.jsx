@@ -184,146 +184,153 @@ const Kanban = (props) => {
             alert(err.data.errors)
         }
     }
-
     return (
         <>
-            <Box sx={{
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Button onClick={createSection}>Add section</Button>
+            <Typography variant="body2" fontWeight="7">
+              {sections.length} Sections
+            </Typography>
+          </Box>
+          <Divider sx={{ margin: '10px 0' }} />
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Box
+              sx={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-            }}>
-                <Button onClick={createSection}>
-                    Add section
-                </Button>
-                <Typography variant='body2' fontWeight='7'>
-                    {sections.length} Sections 
-                </Typography>
+                alignItems: 'flex-start',
+                width: 'calc(100vw - 400px)',
+                overflowX: 'auto'
+              }}
+            >
+              {sections.map((section, index) => (
+                <div key={section.id} style={{ width: '300px' }}>
+                  <Box
+                    sx={{
+                      width: '300px',
+                      padding: '10px',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginBottom: '10px'
+                      }}
+                    >
+                      <TextField
+                        value={section.name}
+                        onChange={(e) => changeSectionName(e, section.id)}
+                        onBlur={(e) => updateSectionName(e, section.id)}
+                        placeholder={`New Section #${index}`}
+                        variant="outlined"
+                        sx={{
+                          flexGrow: 1,
+                          '& .MuiOutlinedInput-input': { padding: 0 },
+                          '& .MuiOutlinedInput-notchedOutline': { border: 'unset' },
+                          '& .MuiOutlinedInput-root': {
+                            fontSize: '1rem',
+                            fontWeight: '700'
+                          }
+                        }}
+                      />
+                      <IconButton
+                        variant="outlined"
+                        size="small"
+                        onClick={() => createTask(section.id)}
+                        sx={{
+                          color: 'gray',
+                          '&:hover': { color: theme.success.main }
+                        }}
+                      >
+                        <AddOutlinedIcon />
+                      </IconButton>
+                      <IconButton
+                        variant="outlined"
+                        size="small"
+                        sx={{
+                          color: 'gray',
+                          '&:hover': { color: theme.error.main }
+                        }}
+                        onClick={() => removeSection(section.id)}
+                      >
+                        <DeleteOutlinedIcon />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                  <Droppable key={section.id} droppableId={section.id.toString()}>
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                        {section.tasks
+                          .sort((a, b) => a.position - b.position)
+                          .map((task, index) => (
+                            <Draggable
+                              key={task.id}
+                              draggableId={task.id.toString()}
+                              index={index}
+                            >
+                              {(provided, snapshot) => (
+                                <Card
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  sx={{
+                                    backgroundColor: theme.card.main,
+                                    padding: '10px',
+                                    marginBottom: '10px',
+                                    marginRight: '10px',
+                                    cursor: snapshot.isDragging ? 'grab' : 'pointer!important',
+                                    display: 'flex',
+                                    justifyContent: 'space-between'
+                                  }}
+                                >
+                                  <TextField
+                                    value={task.name}
+                                    onChange={(e) => changeTaskName(e, section.id, task.id)}
+                                    onBlur={(e) => updateTaskName(e, task.id)}
+                                    placeholder={`New Task #${index}`}
+                                    variant="outlined"
+                                    sx={{
+                                      flexGrow: 1,
+                                      '& .MuiOutlinedInput-input': { padding: 0 },
+                                      '& .MuiOutlinedInput-notchedOutline': { border: 'unset' },
+                                      '& .MuiOutlinedInput-root': {
+                                        fontSize: '1rem',
+                                        fontWeight: '700'
+                                      }
+                                    }}
+                                  />
+                                  <IconButton
+                                    variant="outlined"
+                                    size="small"
+                                    sx={{
+                                      color: 'gray',
+                                      '&:hover': { color: theme.error.main }
+                                    }}
+                                    onClick={() => removeTask(section.id, task.id)}
+                                  >
+                                    <DeleteOutlinedIcon />
+                                  </IconButton>
+                                </Card>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </div>
+              ))}
             </Box>
-            <Divider sx={{ margin: '10px 0' }} />
-            <DragDropContext onDragEnd={onDragEnd}>
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'flext-start',
-                    width: 'calc(100vw - 400px)',
-                    overflowX: 'auto'
-                }}>
-                    {
-                        sections.map((section, index) => (
-                            <div key={section.id} style={{width: '300px'}}>
-                                <Droppable key={section.id} droppableId={section.id.toString()}>
-                                    {
-                                        (provided) => (
-                                            <Box
-                                                ref={provided.innerRef}
-                                                {...provided.droppableProps}
-                                                sx={{
-                                                    width: '300px',
-                                                    padding: '10px',
-                                                    marginRight: '10px'
-                                                }}
-                                            >
-                                                {provided.placeholder}
-                                                <Box sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: '10px'
-                                                }}>
-                                                    <TextField
-                                                        value={section.name}
-                                                        onChange={(e) => changeSectionName(e, section.id)}
-                                                        onBlur={(e) => updateSectionName(e, section.id)}
-                                                        placeholder= {`New Section #${index}`}
-                                                        variant='outlined'
-                                                        sx={{
-                                                            flexGrow: 1,
-                                                            '& .MuiOutlinedInput-input': {padding: 0},
-                                                            '& .MuiOutlinedInput-notchedOutline': {border: 'unset'},
-                                                            '& .MuiOutlinedInput-root': {fontSize: '1rem', fontWeight: '700'},
-                                                        }}
-                                                    />
-                                                    <IconButton
-                                                        variant='outlined'
-                                                        size='small'
-                                                        onClick={() => createTask(section.id)}
-                                                        sx={{
-                                                            color: 'gray',
-                                                            '&:hover': {color: theme.success.main}
-                                                        }}
-                                                    >
-                                                        <AddOutlinedIcon/>
-                                                    </IconButton>
-                                                    <IconButton
-                                                        variant='outlined'
-                                                        size='small'
-                                                        sx={{
-                                                            color: 'gray',
-                                                            '&:hover': {color: theme.error.main}
-                                                        }}
-                                                        onClick={() => removeSection(section.id)}
-                                                    >
-                                                        <DeleteOutlinedIcon/>
-                                                    </IconButton>
-                                                </Box>
-                                                {
-                                                section.tasks
-                                                    .sort((a, b) => a.position - b.position)
-                                                    .map((task, index) => (
-                                                    <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
-                                                    {(provided, snapshot) => (
-                                                        <Card
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                            sx={{
-                                                                backgroundColor: theme.card.main,
-                                                                padding: '10px',
-                                                                marginBottom: '10px',
-                                                                cursor: snapshot.isDragging ? 'grab' : 'pointer!important',
-                                                                display: 'flex',
-                                                                justifyContent: 'space-between'
-                                                            }}
-                                                        >
-                                                            <TextField
-                                                                value={task.name}
-                                                                onChange={(e) => changeTaskName(e, section.id, task.id)}
-                                                                onBlur={(e) => updateTaskName(e, task.id)}
-                                                                placeholder= {`New Task #${index}`}
-                                                                variant='outlined'
-                                                                sx={{
-                                                                    flexGrow: 1,
-                                                                    '& .MuiOutlinedInput-input': {padding: 0},
-                                                                    '& .MuiOutlinedInput-notchedOutline': {border: 'unset'},
-                                                                    '& .MuiOutlinedInput-root': {fontSize: '1rem', fontWeight: '700'},
-                                                                }}
-                                                            />
-                                                            <IconButton
-                                                                variant='outlined'
-                                                                size='small'
-                                                                sx={{
-                                                                    color: 'gray',
-                                                                    '&:hover': {color: theme.error.main}
-                                                                }}
-                                                                onClick={() => removeTask(section.id, task.id)}
-                                                            >
-                                                                <DeleteOutlinedIcon/>
-                                                            </IconButton>
-                                                        </Card>
-                                                    )}
-                                                    </Draggable>
-                                                ))                    
-                                                }
-                                            </Box>
-                                        )
-                                    }
-                                </Droppable>
-                            </div>
-                        ))
-                    }
-                </Box>
-            </DragDropContext>
+          </DragDropContext>
         </>
-    )
+      )
 }
 
 export default Kanban;
