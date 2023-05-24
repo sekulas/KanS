@@ -17,7 +17,7 @@ public class DataCoherenceBackgroundService : BackgroundService {
                 await UpdateSectionsAndTasksDeletion(dbContext);
             }
 
-            await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
+            await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
         }
     }
 

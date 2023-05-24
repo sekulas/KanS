@@ -32,15 +32,27 @@ const Kanban = (props) => {
         const sourceTasks = [...sourceCol.tasks]
         const destinationTasks = [...destinationCol.tasks]
 
+        const didSectionChange = source.droppableId !== destination.droppableId ? true : false
+
             // changing section of task
-        if(source.droppableId !== destination.droppableId) {
+        if(didSectionChange) {
             const [removed] = sourceTasks.splice(source.index, 1) // removing element from source column
+            sourceTasks.forEach(t => t.position > removed.position ? t.position-- : t.position)
+            removed.position = destination.index;
+            destinationTasks.forEach(t => t.position >= destination.index ? t.position++ : t.position)
             destinationTasks.splice(destination.index, 0, removed) // inserting element to dest column
             sections[sourceColIndex].tasks = sourceTasks
             sections[destinationColIndex].tasks = destinationTasks
         }
         else { // changing position of task in same column
-            const [removed] = destinationTasks.splice(source.index, 1) 
+            const [removed] = destinationTasks.splice(source.index, 1)
+            if( destination.index > source.index) {
+                destinationTasks.forEach(t => t.position > source.index && t.position <= destination.index ? t.position-- : t.position)
+            }
+            else if ( destination.index < source.index) {
+                destinationTasks.forEach(t => t.position < source.index && t.position >= destination.index ? t.position++ : t.position)
+            }
+            removed.position = destination.index;
             destinationTasks.splice(destination.index, 0, removed)  
             sections[destinationColIndex].tasks = destinationTasks
         }
@@ -121,8 +133,9 @@ const Kanban = (props) => {
         try {
             const task = await taskApi.create(boardId, {sectionId: sectionId})
             const newSections = [...sections]
-            const index = newSections.findIndex(e => e.id === sectionId)
-            newSections[index].tasks.unshift(task)
+            const newSectionIndex = newSections.findIndex(e => e.id === sectionId)
+            newSections[newSectionIndex].tasks.forEach(taskInSection => taskInSection.position++);
+            newSections[newSectionIndex].tasks.unshift(task)
             setSections(newSections)
         }
         catch (err) {
@@ -138,8 +151,11 @@ const Kanban = (props) => {
         try {
             await taskApi.remove(boardId, taskId)
             const newSections = [...sections]
-            const index = newSections.findIndex(e => e.id === sectionId)
-            newSections[index].tasks = newSections[index].tasks.filter(e => e.id != taskId)
+            const newSectionIndex = newSections.findIndex(e => e.id === sectionId)
+            const removedTaskIndex = newSections[newSectionIndex].tasks.findIndex(e => e.id === taskId)
+            const removedTaskPosition = newSections[newSectionIndex].tasks[removedTaskIndex].position
+            newSections[newSectionIndex].tasks.forEach(t => t.position > removedTaskPosition ? t.position-- : t.position)
+            newSections[newSectionIndex].tasks = newSections[newSectionIndex].tasks.filter(e => e.id != taskId)
             setSections(newSections)
         }
         catch (err) {
@@ -250,7 +266,9 @@ const Kanban = (props) => {
                                                     </IconButton>
                                                 </Box>
                                                 {
-                                                section.tasks.map((task, index) => (
+                                                section.tasks
+                                                    .sort((a, b) => a.position - b.position)
+                                                    .map((task, index) => (
                                                     <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
                                                     {(provided, snapshot) => (
                                                         <Card
