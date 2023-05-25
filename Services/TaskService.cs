@@ -84,7 +84,7 @@ public class TaskService : ITaskService {
 
         var ub = await _context.UserBoards
                     .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BoardId == boardId && !ub.Deleted && ub.ParticipatingAccepted == "true");
-        
+
         if(ub == null) {
             throw new NotFoundException("Cannot remove a task - Board not found.");
         }
@@ -92,7 +92,7 @@ public class TaskService : ITaskService {
         var task = await _context.Tasks
             .FirstOrDefaultAsync(j => j.Id == taskId && !j.Deleted && j.BoardId == boardId);
 
-        if( task == null) {
+        if(task == null) {
             throw new NotFoundException("There is no task like this to remove");
         }
 

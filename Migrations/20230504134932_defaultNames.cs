@@ -1,16 +1,12 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace KanS.Migrations
-{
+namespace KanS.Migrations {
     /// <inheritdoc />
-    public partial class defaultNames : Migration
-    {
+    public partial class defaultNames : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.RenameColumn(
                 name: "Postion",
                 table: "UserBoards",
@@ -85,8 +81,7 @@ namespace KanS.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.RenameColumn(
                 name: "Position",
                 table: "UserBoards",

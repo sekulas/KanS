@@ -3,21 +3,17 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace KanS.Migrations
-{
+namespace KanS.Migrations {
     /// <inheritdoc />
-    public partial class tasksInsteadOfJobs : Migration
-    {
+    public partial class tasksInsteadOfJobs : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
                 name: "Jobs");
 
             migrationBuilder.CreateTable(
                 name: "Tasks",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     BoardId = table.Column<int>(type: "integer", nullable: false),
@@ -27,8 +23,7 @@ namespace KanS.Migrations
                     Position = table.Column<int>(type: "integer", nullable: false),
                     Deleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Tasks", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Tasks_Sections_SectionId",
@@ -45,15 +40,13 @@ namespace KanS.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
                 name: "Tasks");
 
             migrationBuilder.CreateTable(
                 name: "Jobs",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SectionId = table.Column<int>(type: "integer", nullable: false),
@@ -63,8 +56,7 @@ namespace KanS.Migrations
                     Name = table.Column<string>(type: "text", nullable: false, defaultValue: ""),
                     Position = table.Column<int>(type: "integer", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Jobs", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Jobs_Sections_SectionId",

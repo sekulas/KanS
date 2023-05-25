@@ -3,14 +3,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace KanS.Migrations
-{
+namespace KanS.Migrations {
     /// <inheritdoc />
-    public partial class contextForSection : Migration
-    {
+    public partial class contextForSection : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropForeignKey(
                 name: "FK_Jobs_Sections_Id",
                 table: "Jobs");
@@ -65,8 +62,7 @@ namespace KanS.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropForeignKey(
                 name: "FK_Jobs_Sections_SectionId",
                 table: "Jobs");

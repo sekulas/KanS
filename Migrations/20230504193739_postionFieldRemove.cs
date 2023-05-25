@@ -2,14 +2,11 @@
 
 #nullable disable
 
-namespace KanS.Migrations
-{
+namespace KanS.Migrations {
     /// <inheritdoc />
-    public partial class postionFieldRemove : Migration
-    {
+    public partial class postionFieldRemove : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropColumn(
                 name: "FavouritePosition",
                 table: "Boards");
@@ -20,8 +17,7 @@ namespace KanS.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.AddColumn<int>(
                 name: "FavouritePosition",
                 table: "Boards",

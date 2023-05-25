@@ -1,6 +1,4 @@
-﻿using KanS.Models;
-
-namespace KanS.Entities;
+﻿namespace KanS.Entities;
 
 public class Board {
     public int Id { get; set; }

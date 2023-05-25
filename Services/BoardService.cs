@@ -3,7 +3,6 @@ using KanS.Entities;
 using KanS.Exceptions;
 using KanS.Interfaces;
 using KanS.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanS.Services;
@@ -107,7 +106,7 @@ public class BoardService : IBoardService {
 
         var boards = await _context.UserBoards.AsNoTracking()
             .Where(ub => ub.UserId == userId && !ub.Deleted && ub.ParticipatingAccepted == "true")
-            .Select(ub => _mapper.Map<Board,BoardDto>(ub.Board))
+            .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();
 
         return boards;
@@ -204,7 +203,7 @@ public class BoardService : IBoardService {
             throw new NotFoundException("Board not found.");
         }
 
-        if (userId == board.OwnerId) {
+        if(userId == board.OwnerId) {
             var ubList = await _context.UserBoards
                 .Where(ub => ub.BoardId == boardId)
                 .ToListAsync();

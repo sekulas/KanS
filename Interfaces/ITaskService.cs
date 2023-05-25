@@ -1,5 +1,4 @@
-﻿using KanS.Entities;
-using KanS.Models;
+﻿using KanS.Models;
 
 namespace KanS.Interfaces;
 

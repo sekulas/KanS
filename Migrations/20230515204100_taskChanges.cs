@@ -2,14 +2,11 @@
 
 #nullable disable
 
-namespace KanS.Migrations
-{
+namespace KanS.Migrations {
     /// <inheritdoc />
-    public partial class taskChanges : Migration
-    {
+    public partial class taskChanges : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropColumn(
                 name: "Description",
                 table: "Jobs");
@@ -47,8 +44,7 @@ namespace KanS.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropColumn(
                 name: "Deleted",
                 table: "Jobs");

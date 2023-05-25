@@ -232,7 +232,6 @@ const Kanban = (props) => {
                         placeholder={`New Section #${index}`}
                         variant="outlined"
                         sx={{
-                          flexGrow: 1,
                           '& .MuiOutlinedInput-input': { padding: 0 },
                           '& .MuiOutlinedInput-notchedOutline': { border: 'unset' },
                           '& .MuiOutlinedInput-root': {
@@ -297,27 +296,29 @@ const Kanban = (props) => {
                                     onBlur={(e) => updateTaskName(e, task.id)}
                                     placeholder={`New Task #${index}`}
                                     variant="outlined"
+                                    multiline
                                     sx={{
-                                      flexGrow: 1,
                                       '& .MuiOutlinedInput-input': { padding: 0 },
                                       '& .MuiOutlinedInput-notchedOutline': { border: 'unset' },
                                       '& .MuiOutlinedInput-root': {
                                         fontSize: '1rem',
-                                        fontWeight: '700'
+                                        fontWeight: '700',
                                       }
                                     }}
                                   />
-                                  <IconButton
-                                    variant="outlined"
-                                    size="small"
-                                    sx={{
-                                      color: theme.placeholder.main,
-                                      '&:hover': { color: theme.button.error}
-                                    }}
-                                    onClick={() => removeTask(section.id, task.id)}
-                                  >
-                                    <DeleteOutlinedIcon />
-                                  </IconButton>
+                                  <div>
+                                    <IconButton
+                                      variant="outlined"
+                                      size="small"
+                                      sx={{
+                                        color: theme.placeholder.main,
+                                        '&:hover': { color: theme.button.error}
+                                      }}
+                                      onClick={() => removeTask(section.id, task.id)}
+                                    >
+                                      <DeleteOutlinedIcon />
+                                    </IconButton>
+                                  </div>
                                 </Card>
                               )}
                             </Draggable>
