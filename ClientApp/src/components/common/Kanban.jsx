@@ -214,15 +214,17 @@ const Kanban = (props) => {
                   <Box
                     sx={{
                       width: '300px',
-                      padding: '10px',
+                      padding: '5px',
+
                     }}
                   >
                     <Box
                       sx={{
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        marginBottom: '10px'
+                        alignItems: 'start',
+                        justifyContent: 'space-around',
+                        marginBottom: '10px',
+                        padding: '5px',
                       }}
                     >
                       <TextField
@@ -231,7 +233,9 @@ const Kanban = (props) => {
                         onBlur={(e) => updateSectionName(e, section.id)}
                         placeholder={`New Section #${index}`}
                         variant="outlined"
+                        multiline
                         sx={{
+                          flex: '1',
                           '& .MuiOutlinedInput-input': { padding: 0 },
                           '& .MuiOutlinedInput-notchedOutline': { border: 'unset' },
                           '& .MuiOutlinedInput-root': {
@@ -240,28 +244,30 @@ const Kanban = (props) => {
                           }
                         }}
                       />
-                      <IconButton
-                        variant="outlined"
-                        size="small"
-                        onClick={() => createTask(section.id)}
-                        sx={{
-                          color: 'gray',
-                          '&:hover': { color: theme.button.success }
-                        }}
-                      >
-                        <AddOutlinedIcon />
-                      </IconButton>
-                      <IconButton
-                        variant="outlined"
-                        size="small"
-                        sx={{
-                          color: 'gray',
-                          '&:hover': { color: theme.button.error }
-                        }}
-                        onClick={() => removeSection(section.id)}
-                      >
-                        <DeleteOutlinedIcon />
-                      </IconButton>
+                      <div style={{display: 'flex'}}>
+                        <IconButton
+                          variant="outlined"
+                          size="small"
+                          onClick={() => createTask(section.id)}
+                          sx={{
+                            color: 'gray',
+                            '&:hover': { color: theme.button.success }
+                          }}
+                        >
+                          <AddOutlinedIcon />
+                        </IconButton>
+                        <IconButton
+                          variant="outlined"
+                          size="small"
+                          sx={{
+                            color: 'gray',
+                            '&:hover': { color: theme.button.error }
+                          }}
+                          onClick={() => removeSection(section.id)}
+                        >
+                          <DeleteOutlinedIcon />
+                        </IconButton>
+                      </div>
                     </Box>
                   </Box>
                   <Droppable key={section.id} droppableId={section.id.toString()}>
@@ -298,6 +304,7 @@ const Kanban = (props) => {
                                     variant="outlined"
                                     multiline
                                     sx={{
+                                      flex: '1',
                                       '& .MuiOutlinedInput-input': { padding: 0 },
                                       '& .MuiOutlinedInput-notchedOutline': { border: 'unset' },
                                       '& .MuiOutlinedInput-root': {
