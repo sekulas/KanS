@@ -155,6 +155,13 @@ public class BoardService : IBoardService {
             throw new NotFoundException("There is no user with this email to share with.");
         }
 
+        var checkIfRequestNotSent = await _context.UserBoards
+            .FirstOrDefaultAsync(ub => ub.UserId == requestedUser.Id && ub.BoardId == boardId && (ub.ParticipatingAccepted == "true" || ub.ParticipatingAccepted == "pending") );
+
+        if(checkIfRequestNotSent != null) {
+            throw new BadRequestException("You have already sent a colaboration request to this user.");
+        }
+
         UserBoard newUb = new UserBoard() {
             UserId = requestedUser.Id,
             BoardId = boardId,
