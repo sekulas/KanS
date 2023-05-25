@@ -21,21 +21,19 @@ function App() {
         },
         list: {
             main: "rgb(0, 64, 128)",
-            selected: "rgb(0, 93, 183)"
+            selected: "rgb(0, 93, 183)",
+            favourite: "#f57c00",
+            share: "#9D009D"
         },
-        success: {
-            main: "#388e3c"
+        button: {
+            success: "#388e3c",
+            error: "#f44336",
+            share: "#FF00FF",
+            favourite: "#ffb74d"
         },
-        error: {
-            main: "#f44336"
-        },
-        warning: {
-            main: "#f57c00",
-            light: "#ffb74d"
-        },
-        share: {
-            main: "#FF00FF",
-            dark: "#9D009D"
+        placeholder: {
+            main: "#9e9e9e",
+            dark: "#616161"
         }
     })
 

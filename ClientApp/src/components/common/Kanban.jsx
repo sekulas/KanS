@@ -34,6 +34,7 @@ const Kanban = (props) => {
 
         const didSectionChange = source.droppableId !== destination.droppableId ? true : false
 
+        const newSections = [...sections]
             // changing section of task
         if(didSectionChange) {
             const [removed] = sourceTasks.splice(source.index, 1) // removing element from source column
@@ -41,8 +42,7 @@ const Kanban = (props) => {
             removed.position = destination.index;
             destinationTasks.forEach(t => t.position >= destination.index ? t.position++ : t.position)
             destinationTasks.splice(destination.index, 0, removed) // inserting element to dest column
-            sections[sourceColIndex].tasks = sourceTasks
-            sections[destinationColIndex].tasks = destinationTasks
+            newSections[sourceColIndex].tasks = sourceTasks
         }
         else { // changing position of task in same column
             const [removed] = destinationTasks.splice(source.index, 1)
@@ -54,15 +54,16 @@ const Kanban = (props) => {
             }
             removed.position = destination.index;
             destinationTasks.splice(destination.index, 0, removed)  
-            sections[destinationColIndex].tasks = destinationTasks
         }
+
+        newSections[destinationColIndex].tasks = destinationTasks
 
         try {
             await taskApi.update(boardId, taskId, {
                 sectionId: destinationSectionId,
                 position: destination.index
             })
-            setSections(sections)
+            setSections(newSections)
         }
         catch (err) {
             if(err.data === undefined) {
@@ -246,7 +247,7 @@ const Kanban = (props) => {
                         onClick={() => createTask(section.id)}
                         sx={{
                           color: 'gray',
-                          '&:hover': { color: theme.success.main }
+                          '&:hover': { color: theme.button.success }
                         }}
                       >
                         <AddOutlinedIcon />
@@ -256,7 +257,7 @@ const Kanban = (props) => {
                         size="small"
                         sx={{
                           color: 'gray',
-                          '&:hover': { color: theme.error.main }
+                          '&:hover': { color: theme.button.error }
                         }}
                         onClick={() => removeSection(section.id)}
                       >
@@ -310,8 +311,8 @@ const Kanban = (props) => {
                                     variant="outlined"
                                     size="small"
                                     sx={{
-                                      color: 'gray',
-                                      '&:hover': { color: theme.error.main }
+                                      color: theme.placeholder.main,
+                                      '&:hover': { color: theme.button.error}
                                     }}
                                     onClick={() => removeTask(section.id, task.id)}
                                   >
@@ -322,6 +323,18 @@ const Kanban = (props) => {
                             </Draggable>
                           ))}
                         {provided.placeholder}
+                        {section.tasks.length === 0 && (
+                            <Typography 
+                              variant="body2" 
+                              fontWeight="700" 
+                              sx={{
+                                color: theme.placeholder.dark,
+                                textAlign: 'center',
+                              }}
+                            >
+                              Empty Section
+                            </Typography>
+                        )}
                       </div>
                     )}
                   </Droppable>
