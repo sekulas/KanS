@@ -76,12 +76,13 @@ public class BoardService : IBoardService {
 
         var boardDto = _mapper.Map<BoardWithSectionsDto>(ub.Board);
         boardDto.Sections = sectionsDto;
+        boardDto.Favourite = ub.Favourite;
 
         return boardDto;
     }
 
     public async Task UpdateBoard(int boardId, BoardUpdateDto boardDto) {
-
+        var userId = (int) _userContextService.GetUserId;
         var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
 
         if(board == null) {
@@ -95,7 +96,11 @@ public class BoardService : IBoardService {
             board.Description = boardDto.Description;
         }
         if(boardDto.Favourite != null) {
-            board.Favourite = (bool) boardDto.Favourite;
+            var ub = await _context.UserBoards.FirstOrDefaultAsync(b => b.BoardId == boardId && b.UserId == userId);
+            if(ub == null) {
+                throw new NotFoundException("There is no connection between the user and the board.");
+            }
+            ub.Favourite = (bool) boardDto.Favourite;
         }
 
         await _context.SaveChangesAsync();
@@ -116,7 +121,7 @@ public class BoardService : IBoardService {
         var userId = (int) _userContextService.GetUserId;
 
         var boards = await _context.UserBoards.AsNoTracking()
-            .Where(ub => ub.UserId == userId && ub.Board.Favourite && !ub.Deleted && ub.ParticipatingAccepted == "true")
+            .Where(ub => ub.UserId == userId && ub.Favourite && !ub.Deleted && ub.ParticipatingAccepted == "true")
             .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();
 

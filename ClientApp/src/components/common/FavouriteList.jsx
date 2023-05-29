@@ -65,9 +65,9 @@ const FavouriteList = () => {
             variant="body2"
             fontWeight="700"
             sx={{
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              whiteSpace: "pre-wrap",
+              overflowWrap: "break-word",
+              overflow: "scroll",
             }}
           >
             {item.name}
