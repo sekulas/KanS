@@ -1,8 +1,11 @@
-# KanS
-KanS - Kanban System for managing boards and tasks for you and your team.
+<p align="center">
+<img src="ClientApp/src/assets/images/logo-dark.png" alt="KanS logo" width="30%" height="30%">
+</p>
+<h2 align="center">
+Kanban System for managing boards and tasks for you and your team.
+</h2>
 
 # Table of contents
-- [KanS](#kans)
 - [Table of contents](#table-of-contents)
 - [General info](#general-info)
 - [Technologies](#technologies)
@@ -20,7 +23,7 @@ One of KanS's standout features is its ability to foster teamwork. Users have th
 The application is developed using C#, React, and PostgreSQL.
 
 <p align="center">
-<img src="READMEassets/csharp.svg" alt="C#" width="75" height="100" alt="C#"><img src="READMEassets/react.svg" alt="React" width="75" height="100"><img src="READMEassets/postgresql.svg" alt="PostgreSQL" width="75" height="100"> 
+<img src="READMEassets/csharp.svg" alt="C#" width="75" height="100"><img src="READMEassets/react.svg" alt="React" width="75" height="100"><img src="READMEassets/postgresql.svg" alt="PostgreSQL" width="75" height="100"> 
 </p>
 
 # Technologies
