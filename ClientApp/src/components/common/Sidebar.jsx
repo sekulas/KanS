@@ -26,7 +26,7 @@ const Sidebar = () => {
                 const res = await boardApi.getAllForUser()
                 dispatch(setBoards(res))
                 if(res.length > 0 && boardId === undefined) {
-                    navigate(`/boards/${res[0].id}`)
+                    navigate(`/boards/${boards[0].id}`)
                 }
             } catch(err) {
                 alert(err.data.errors)
@@ -34,7 +34,7 @@ const Sidebar = () => {
         }
 
         getBoards()
-    }, [])
+    }, [boardId])
 
     const logout = () => {
         localStorage.removeItem('token')

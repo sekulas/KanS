@@ -23,7 +23,7 @@ const FavouriteList = () => {
     };
 
     getFavouriteBoards();
-  }, []);
+  }, [boardId]);
 
   return (
     <>

@@ -114,6 +114,8 @@ public class BoardService : IBoardService {
             .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();
 
+        boards = boards.OrderBy(board => board.Name).ToList();
+
         return boards;
     }
 
@@ -124,6 +126,8 @@ public class BoardService : IBoardService {
             .Where(ub => ub.UserId == userId && ub.Favourite && !ub.Deleted && ub.ParticipatingAccepted == "true")
             .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();
+
+        boards = boards.OrderBy(board => board.Name).ToList();
 
         return boards;
     }
