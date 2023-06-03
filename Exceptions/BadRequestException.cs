@@ -1,9 +1,6 @@
-﻿using System.Runtime.Serialization;
-
-namespace KanS.Exceptions;
+﻿namespace KanS.Exceptions;
 [Serializable]
-internal class BadRequestException : Exception
-{
+internal class BadRequestException : Exception {
     public BadRequestException(string message) : base(message) {
     }
 }

@@ -32,25 +32,38 @@ const Kanban = (props) => {
         const sourceTasks = [...sourceCol.tasks]
         const destinationTasks = [...destinationCol.tasks]
 
+        const didSectionChange = source.droppableId !== destination.droppableId ? true : false
+
+        const newSections = [...sections]
             // changing section of task
-        if(source.droppableId !== destination.droppableId) {
+        if(didSectionChange) {
             const [removed] = sourceTasks.splice(source.index, 1) // removing element from source column
+            sourceTasks.forEach(t => t.position > removed.position ? t.position-- : t.position)
+            removed.position = destination.index;
+            destinationTasks.forEach(t => t.position >= destination.index ? t.position++ : t.position)
             destinationTasks.splice(destination.index, 0, removed) // inserting element to dest column
-            sections[sourceColIndex].tasks = sourceTasks
-            sections[destinationColIndex].tasks = destinationTasks
+            newSections[sourceColIndex].tasks = sourceTasks
         }
         else { // changing position of task in same column
-            const [removed] = destinationTasks.splice(source.index, 1) 
+            const [removed] = destinationTasks.splice(source.index, 1)
+            if( destination.index > source.index) {
+                destinationTasks.forEach(t => t.position > source.index && t.position <= destination.index ? t.position-- : t.position)
+            }
+            else if ( destination.index < source.index) {
+                destinationTasks.forEach(t => t.position < source.index && t.position >= destination.index ? t.position++ : t.position)
+            }
+            removed.position = destination.index;
             destinationTasks.splice(destination.index, 0, removed)  
-            sections[destinationColIndex].tasks = destinationTasks
         }
+
+        newSections[destinationColIndex].tasks = destinationTasks
 
         try {
             await taskApi.update(boardId, taskId, {
                 sectionId: destinationSectionId,
                 position: destination.index
             })
-            setSections(sections)
+            setSections(newSections)
         }
         catch (err) {
             if(err.data === undefined) {
@@ -121,8 +134,9 @@ const Kanban = (props) => {
         try {
             const task = await taskApi.create(boardId, {sectionId: sectionId})
             const newSections = [...sections]
-            const index = newSections.findIndex(e => e.id === sectionId)
-            newSections[index].tasks.unshift(task)
+            const newSectionIndex = newSections.findIndex(e => e.id === sectionId)
+            newSections[newSectionIndex].tasks.forEach(taskInSection => taskInSection.position++);
+            newSections[newSectionIndex].tasks.unshift(task)
             setSections(newSections)
         }
         catch (err) {
@@ -138,8 +152,11 @@ const Kanban = (props) => {
         try {
             await taskApi.remove(boardId, taskId)
             const newSections = [...sections]
-            const index = newSections.findIndex(e => e.id === sectionId)
-            newSections[index].tasks = newSections[index].tasks.filter(e => e.id != taskId)
+            const newSectionIndex = newSections.findIndex(e => e.id === sectionId)
+            const removedTaskIndex = newSections[newSectionIndex].tasks.findIndex(e => e.id === taskId)
+            const removedTaskPosition = newSections[newSectionIndex].tasks[removedTaskIndex].position
+            newSections[newSectionIndex].tasks.forEach(t => t.position > removedTaskPosition ? t.position-- : t.position)
+            newSections[newSectionIndex].tasks = newSections[newSectionIndex].tasks.filter(e => e.id != taskId)
             setSections(newSections)
         }
         catch (err) {
@@ -168,144 +185,173 @@ const Kanban = (props) => {
             alert(err.data.errors)
         }
     }
-
     return (
         <>
-            <Box sx={{
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Button onClick={createSection}>Add section</Button>
+            <Typography variant="body2" fontWeight="7">
+              {sections.length} Sections
+            </Typography>
+          </Box>
+          <Divider sx={{ margin: '10px 0' }} />
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Box
+              sx={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-            }}>
-                <Button onClick={createSection}>
-                    Add section
-                </Button>
-                <Typography variant='body2' fontWeight='7'>
-                    {sections.length} Sections 
-                </Typography>
+                alignItems: 'flex-start',
+                width: 'calc(100vw - 400px)',
+                overflowX: 'auto'
+              }}
+            >
+              {sections.map((section, index) => (
+                <div key={section.id} style={{ width: '300px' }}>
+                  <Box
+                    sx={{
+                      width: '300px',
+                      padding: '5px',
+
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'start',
+                        justifyContent: 'space-around',
+                        marginBottom: '10px',
+                        padding: '5px',
+                      }}
+                    >
+                      <TextField
+                        value={section.name}
+                        onChange={(e) => changeSectionName(e, section.id)}
+                        onBlur={(e) => updateSectionName(e, section.id)}
+                        placeholder={`New Section #${index}`}
+                        variant="outlined"
+                        multiline
+                        sx={{
+                          flex: '1',
+                          '& .MuiOutlinedInput-input': { padding: 0 },
+                          '& .MuiOutlinedInput-notchedOutline': { border: 'unset' },
+                          '& .MuiOutlinedInput-root': {
+                            fontSize: '1rem',
+                            fontWeight: '700'
+                          }
+                        }}
+                      />
+                      <div style={{display: 'flex'}}>
+                        <IconButton
+                          variant="outlined"
+                          size="small"
+                          onClick={() => createTask(section.id)}
+                          sx={{
+                            color: 'gray',
+                            '&:hover': { color: theme.button.success }
+                          }}
+                        >
+                          <AddOutlinedIcon />
+                        </IconButton>
+                        <IconButton
+                          variant="outlined"
+                          size="small"
+                          sx={{
+                            color: 'gray',
+                            '&:hover': { color: theme.button.error }
+                          }}
+                          onClick={() => removeSection(section.id)}
+                        >
+                          <DeleteOutlinedIcon />
+                        </IconButton>
+                      </div>
+                    </Box>
+                  </Box>
+                  <Droppable key={section.id} droppableId={section.id.toString()}>
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                        {section.tasks
+                          .sort((a, b) => a.position - b.position)
+                          .map((task, index) => (
+                            <Draggable
+                              key={task.id}
+                              draggableId={task.id.toString()}
+                              index={index}
+                            >
+                              {(provided, snapshot) => (
+                                <Card
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  sx={{
+                                    backgroundColor: theme.card.main,
+                                    padding: '10px',
+                                    marginBottom: '10px',
+                                    marginRight: '10px',
+                                    cursor: snapshot.isDragging ? 'grab' : 'pointer!important',
+                                    display: 'flex',
+                                    justifyContent: 'space-between'
+                                  }}
+                                >
+                                  <TextField
+                                    value={task.name}
+                                    onChange={(e) => changeTaskName(e, section.id, task.id)}
+                                    onBlur={(e) => updateTaskName(e, task.id)}
+                                    placeholder={`New Task #${index}`}
+                                    variant="outlined"
+                                    multiline
+                                    sx={{
+                                      flex: '1',
+                                      '& .MuiOutlinedInput-input': { padding: 0 },
+                                      '& .MuiOutlinedInput-notchedOutline': { border: 'unset' },
+                                      '& .MuiOutlinedInput-root': {
+                                        fontSize: '1rem',
+                                        fontWeight: '700',
+                                      }
+                                    }}
+                                  />
+                                  <div>
+                                    <IconButton
+                                      variant="outlined"
+                                      size="small"
+                                      sx={{
+                                        color: theme.placeholder.main,
+                                        '&:hover': { color: theme.button.error}
+                                      }}
+                                      onClick={() => removeTask(section.id, task.id)}
+                                    >
+                                      <DeleteOutlinedIcon />
+                                    </IconButton>
+                                  </div>
+                                </Card>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                        {section.tasks.length === 0 && (
+                            <Typography 
+                              variant="body2" 
+                              fontWeight="700" 
+                              sx={{
+                                color: theme.placeholder.dark,
+                                textAlign: 'center',
+                              }}
+                            >
+                              Empty Section
+                            </Typography>
+                        )}
+                      </div>
+                    )}
+                  </Droppable>
+                </div>
+              ))}
             </Box>
-            <Divider sx={{ margin: '10px 0' }} />
-            <DragDropContext onDragEnd={onDragEnd}>
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'flext-start',
-                    width: 'calc(100vw - 400px)',
-                    overflowX: 'auto'
-                }}>
-                    {
-                        sections.map((section, index) => (
-                            <div key={section.id} style={{width: '300px'}}>
-                                <Droppable key={section.id} droppableId={section.id.toString()}>
-                                    {
-                                        (provided) => (
-                                            <Box
-                                                ref={provided.innerRef}
-                                                {...provided.droppableProps}
-                                                sx={{
-                                                    width: '300px',
-                                                    padding: '10px',
-                                                    marginRight: '10px'
-                                                }}
-                                            >
-                                                {provided.placeholder}
-                                                <Box sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'space-between',
-                                                    marginBottom: '10px'
-                                                }}>
-                                                    <TextField
-                                                        value={section.name}
-                                                        onChange={(e) => changeSectionName(e, section.id)}
-                                                        onBlur={(e) => updateSectionName(e, section.id)}
-                                                        placeholder= {`New Section #${index}`}
-                                                        variant='outlined'
-                                                        sx={{
-                                                            flexGrow: 1,
-                                                            '& .MuiOutlinedInput-input': {padding: 0},
-                                                            '& .MuiOutlinedInput-notchedOutline': {border: 'unset'},
-                                                            '& .MuiOutlinedInput-root': {fontSize: '1rem', fontWeight: '700'},
-                                                        }}
-                                                    />
-                                                    <IconButton
-                                                        variant='outlined'
-                                                        size='small'
-                                                        onClick={() => createTask(section.id)}
-                                                        sx={{
-                                                            color: 'gray',
-                                                            '&:hover': {color: theme.success.main}
-                                                        }}
-                                                    >
-                                                        <AddOutlinedIcon/>
-                                                    </IconButton>
-                                                    <IconButton
-                                                        variant='outlined'
-                                                        size='small'
-                                                        sx={{
-                                                            color: 'gray',
-                                                            '&:hover': {color: theme.error.main}
-                                                        }}
-                                                        onClick={() => removeSection(section.id)}
-                                                    >
-                                                        <DeleteOutlinedIcon/>
-                                                    </IconButton>
-                                                </Box>
-                                                {
-                                                section.tasks.map((task, index) => (
-                                                    <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
-                                                    {(provided, snapshot) => (
-                                                        <Card
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                            sx={{
-                                                                backgroundColor: theme.card.main,
-                                                                padding: '10px',
-                                                                marginBottom: '10px',
-                                                                cursor: snapshot.isDragging ? 'grab' : 'pointer!important',
-                                                                display: 'flex',
-                                                                justifyContent: 'space-between'
-                                                            }}
-                                                        >
-                                                            <TextField
-                                                                value={task.name}
-                                                                onChange={(e) => changeTaskName(e, section.id, task.id)}
-                                                                onBlur={(e) => updateTaskName(e, task.id)}
-                                                                placeholder= {`New Task #${index}`}
-                                                                variant='outlined'
-                                                                sx={{
-                                                                    flexGrow: 1,
-                                                                    '& .MuiOutlinedInput-input': {padding: 0},
-                                                                    '& .MuiOutlinedInput-notchedOutline': {border: 'unset'},
-                                                                    '& .MuiOutlinedInput-root': {fontSize: '1rem', fontWeight: '700'},
-                                                                }}
-                                                            />
-                                                            <IconButton
-                                                                variant='outlined'
-                                                                size='small'
-                                                                sx={{
-                                                                    color: 'gray',
-                                                                    '&:hover': {color: theme.error.main}
-                                                                }}
-                                                                onClick={() => removeTask(section.id, task.id)}
-                                                            >
-                                                                <DeleteOutlinedIcon/>
-                                                            </IconButton>
-                                                        </Card>
-                                                    )}
-                                                    </Draggable>
-                                                ))                    
-                                                }
-                                            </Box>
-                                        )
-                                    }
-                                </Droppable>
-                            </div>
-                        ))
-                    }
-                </Box>
-            </DragDropContext>
+          </DragDropContext>
         </>
-    )
+      )
 }
 
 export default Kanban;

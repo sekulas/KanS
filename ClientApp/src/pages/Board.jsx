@@ -175,7 +175,7 @@ const Board = () => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         bgcolor: 'background.paper',
-        border: `2px solid ${theme.share.main}`,
+        border: `2px solid ${theme.button.share}`,
         pt: 2,
         px: 4,
         pb: 3,
@@ -192,14 +192,14 @@ const Board = () => {
                 <IconButton variant='outlined' onClick={addFavourite}>
                 {
                     isFavourite ? (
-                        <StarOutlinedIcon color='warning'/>
+                        <StarOutlinedIcon sx={{color: theme.button.favourite}}/>
                     ) : (
                         <StarBorderOutlinedIcon/>
                     )
                 }
                 </IconButton>
                 <Box>
-                <IconButton variant='outlined' onClick={handleOpen} sx={{color: theme.share.main}}>
+                <IconButton variant='outlined' onClick={handleOpen} sx={{color: theme.button.share}}>
                     <ShareIcon/>
                 </IconButton>
                 <Modal

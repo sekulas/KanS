@@ -1,9 +1,9 @@
-﻿using System.Security.Claims;
-using KanS.Interfaces;
+﻿using KanS.Interfaces;
+using System.Security.Claims;
 
 namespace KanS.Services;
 
-public class UserContextService : IUserContextService{
+public class UserContextService : IUserContextService {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public UserContextService(IHttpContextAccessor httpContextAccessor) {

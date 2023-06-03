@@ -103,7 +103,7 @@ const RequestedList = () => {
                 <Box sx={{
                     paddingTop: '5px'
                 }}/>
-                <ListItem sx={{backgroundColor: theme.share.dark}}>
+                <ListItem sx={{backgroundColor: theme.list.share}}>
                     <Box
                     sx={{
                         width: "100%",
@@ -127,30 +127,30 @@ const RequestedList = () => {
                     cursor: "pointer!important",
                     display: 'flex',
                     justifyContent: 'space-between',
-                    borderLeft: `2px solid ${theme.share.dark}`,
-                    borderRight: `2px solid ${theme.share.dark}`,
-                    borderBottom: `2px solid ${theme.share.dark}`,
+                    borderLeft: `2px solid ${theme.list.share}`,
+                    borderRight: `2px solid ${theme.list.share}`,
+                    borderBottom: `2px solid ${theme.list.share}`,
                 }}
             >
             <Typography
                 variant="body2"
                 fontWeight="700"
                 sx={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    whiteSpace: "pre-wrap",
+                    overflowWrap: "break-word",
+                    overflow: "scroll",
                 }}
             >
                 {item.name}
             </Typography>
-            <Box>
+            <div style={{display: 'flex'}}>
                 <IconButton onClick={() => acceptParticipation(item.id, "true")}>
                     <LibraryAddOutlinedIcon fontSize='small'/>
                 </IconButton>
                 <IconButton onClick={() => denyParticipation(item.id, "false")}>
                     <DeleteOutlinedIcon fontSize='small'/>
                 </IconButton>
-            </Box>
+            </div>
             </ListItem>
         ))}
     </>

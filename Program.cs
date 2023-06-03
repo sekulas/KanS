@@ -1,17 +1,17 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using KanS;
 using KanS.Entities;
-using KanS.Models.Validators;
+using KanS.Interfaces;
+using KanS.Middleware;
 using KanS.Models;
+using KanS.Models.Validators;
 using KanS.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using KanS;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using KanS.Middleware;
-using KanS.Interfaces;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +76,8 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddDbContext<KansDbContext>(
     o => o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddHostedService<DataCoherenceBackgroundService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

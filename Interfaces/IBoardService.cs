@@ -1,6 +1,5 @@
 ﻿using KanS.Entities;
 using KanS.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace KanS.Interfaces;
 

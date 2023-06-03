@@ -3,7 +3,6 @@ using KanS.Entities;
 using KanS.Exceptions;
 using KanS.Interfaces;
 using KanS.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanS.Services;
@@ -77,12 +76,13 @@ public class BoardService : IBoardService {
 
         var boardDto = _mapper.Map<BoardWithSectionsDto>(ub.Board);
         boardDto.Sections = sectionsDto;
+        boardDto.Favourite = ub.Favourite;
 
         return boardDto;
     }
 
     public async Task UpdateBoard(int boardId, BoardUpdateDto boardDto) {
-
+        var userId = (int) _userContextService.GetUserId;
         var board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == boardId);
 
         if(board == null) {
@@ -96,7 +96,11 @@ public class BoardService : IBoardService {
             board.Description = boardDto.Description;
         }
         if(boardDto.Favourite != null) {
-            board.Favourite = (bool) boardDto.Favourite;
+            var ub = await _context.UserBoards.FirstOrDefaultAsync(b => b.BoardId == boardId && b.UserId == userId);
+            if(ub == null) {
+                throw new NotFoundException("There is no connection between the user and the board.");
+            }
+            ub.Favourite = (bool) boardDto.Favourite;
         }
 
         await _context.SaveChangesAsync();
@@ -107,7 +111,7 @@ public class BoardService : IBoardService {
 
         var boards = await _context.UserBoards.AsNoTracking()
             .Where(ub => ub.UserId == userId && !ub.Deleted && ub.ParticipatingAccepted == "true")
-            .Select(ub => _mapper.Map<Board,BoardDto>(ub.Board))
+            .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();
 
         return boards;
@@ -117,7 +121,7 @@ public class BoardService : IBoardService {
         var userId = (int) _userContextService.GetUserId;
 
         var boards = await _context.UserBoards.AsNoTracking()
-            .Where(ub => ub.UserId == userId && ub.Board.Favourite && !ub.Deleted && ub.ParticipatingAccepted == "true")
+            .Where(ub => ub.UserId == userId && ub.Favourite && !ub.Deleted && ub.ParticipatingAccepted == "true")
             .Select(ub => _mapper.Map<Board, BoardDto>(ub.Board))
             .ToListAsync();
 
@@ -154,6 +158,13 @@ public class BoardService : IBoardService {
 
         if(requestedUser == null) {
             throw new NotFoundException("There is no user with this email to share with.");
+        }
+
+        var checkIfRequestNotSent = await _context.UserBoards
+            .FirstOrDefaultAsync(ub => ub.UserId == requestedUser.Id && ub.BoardId == boardId && (ub.ParticipatingAccepted == "true" || ub.ParticipatingAccepted == "pending") );
+
+        if(checkIfRequestNotSent != null) {
+            throw new BadRequestException("You have already sent a colaboration request to this user.");
         }
 
         UserBoard newUb = new UserBoard() {
@@ -204,7 +215,7 @@ public class BoardService : IBoardService {
             throw new NotFoundException("Board not found.");
         }
 
-        if (userId == board.OwnerId) {
+        if(userId == board.OwnerId) {
             var ubList = await _context.UserBoards
                 .Where(ub => ub.BoardId == boardId)
                 .ToListAsync();

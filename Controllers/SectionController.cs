@@ -1,7 +1,6 @@
 ﻿using KanS.Entities;
 using KanS.Interfaces;
 using KanS.Models;
-using KanS.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +15,7 @@ public class SectionController : ControllerBase {
     public SectionController(ISectionService sectionService) {
         _sectionService = sectionService;
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<SectionDto>> CreateSection([FromRoute] int boardId) {
 

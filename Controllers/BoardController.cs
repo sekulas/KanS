@@ -76,7 +76,7 @@ public class BoardController : ControllerBase {
 
         bool isAccessGranted = await _boardService.RespondToParticipationRequest(boardId, resDto);
 
-        if (isAccessGranted) {
+        if(isAccessGranted) {
             return Ok();
         }
 

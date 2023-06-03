@@ -48,5 +48,5 @@ public class TaskController : ControllerBase {
         await _taskService.UpdateTask(boardId, taskId, taskDto);
 
         return Ok();
-    } 
+    }
 }

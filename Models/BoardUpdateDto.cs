@@ -1,6 +1,4 @@
-﻿using KanS.Models;
-
-namespace KanS.Entities;
+﻿namespace KanS.Entities;
 public class BoardUpdateDto {
     public string? Name { get; set; }
     public string? Description { get; set; }
