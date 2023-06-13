@@ -37,7 +37,6 @@ const Board = () => {
                 setSections(res.sections)
                 setIsFavourite(res.favourite)
             } catch(err) {
-                alert(err.data.errors + "\n\nBoard you was looging found not found.\nNavigating to existing board.")
                 if(boards[0] === undefined) {
                     navigate(`/`)
                 }

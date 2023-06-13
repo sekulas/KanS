@@ -29,7 +29,11 @@ const Sidebar = () => {
                     navigate(`/boards/${boards[0].id}`)
                 }
             } catch(err) {
-                alert(err.data.errors)
+                if(err.data === undefined) {
+                    alert(err)
+                } else {
+                    alert(err.data.errors)
+                }
             }
         }
 
@@ -48,7 +52,11 @@ const Sidebar = () => {
             dispatch(setBoards(newList))
             navigate(`/boards/${res.id}`)
         } catch (err) {
-            alert(err.data.errors)
+            if(err.data === undefined) {
+                alert(err)
+            } else {
+                alert(err.data.errors)
+            }
         }
     }
 
