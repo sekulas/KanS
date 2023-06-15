@@ -37,11 +37,10 @@ const Board = () => {
                 setSections(res.sections)
                 setIsFavourite(res.favourite)
             } catch(err) {
-                if(boards[0] === undefined) {
-                    navigate(`/`)
-                }
-                else {
-                    navigate(`/boards/${boards[0].id}`)
+                if (boardId === undefined || boardId === null) {
+                    navigate(`/`);
+                  } else {
+                    navigate(`/boards/${boards[0].id}`);
                 }
             }
         }
